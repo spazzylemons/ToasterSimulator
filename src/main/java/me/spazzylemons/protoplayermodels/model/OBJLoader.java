@@ -1,5 +1,6 @@
 package me.spazzylemons.protoplayermodels.model;
 
+import me.spazzylemons.protoplayermodels.ProtoPlayerModels;
 import me.spazzylemons.protoplayermodels.model.geometry.Face;
 import me.spazzylemons.protoplayermodels.model.geometry.QuadModel;
 import me.spazzylemons.protoplayermodels.model.geometry.Vertex;
@@ -14,7 +15,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.stream.Stream;
 
 public final class OBJLoader {
     private OBJLoader() {}
@@ -29,22 +29,27 @@ public final class OBJLoader {
         for (;;) {
             String line = buf.readLine();
             if (line == null) break;
-            Stream<String> parts = Arrays.stream(line.split(" ")).skip(1);
-            Iterator<Float> floatIterator = parts.map(Float::parseFloat).iterator();
+            Iterator<Float> floatIterator = Arrays.stream(line.split(" ")).skip(1).map(Float::parseFloat).iterator();
             if (line.startsWith("v ")) {
-                vertices.add(new Vector3f(floatIterator.next(), floatIterator.next(), floatIterator.next()));
+                // flip some coordinates?
+                vertices.add(new Vector3f(floatIterator.next(), -floatIterator.next(), -floatIterator.next()));
             } else if (line.startsWith("vt ")) {
-                uvs.add(new Vector2f(floatIterator.next(), floatIterator.next()));
+                // flip v coordinates
+                uvs.add(new Vector2f(floatIterator.next(), -floatIterator.next()));
             } else if (line.startsWith("vn ")) {
-                normals.add(new Vector3f(floatIterator.next(), floatIterator.next(), floatIterator.next()));
+                // flip some coordinates?
+                normals.add(new Vector3f(floatIterator.next(), -floatIterator.next(), -floatIterator.next()));
             } else if (line.startsWith("f ")) {
                 Vector3f normal = new Vector3f();
-                Iterator<Vertex> v = parts.map(it -> {
+                Iterator<Vertex> v = Arrays.stream(line.split(" ")).skip(1).map(it -> {
                     Iterator<Integer> components = Arrays.stream(it.split("/"))
                         .map(i -> Integer.parseInt(i) - 1)
                         .iterator();
-                    normal.add(normals.get(components.next()));
-                    return new Vertex(vertices.get(components.next()), uvs.get(components.next()));
+                    int vi = components.next();
+                    int uvi = components.next();
+                    int ni = components.next();
+                    normal.add(normals.get(ni));
+                    return new Vertex(vertices.get(vi), uvs.get(uvi));
                 }).iterator();
                 Vertex[] va = new Vertex[4];
                 for (int i = 0; i < 4; ++i) va[i] = v.next();
@@ -59,6 +64,17 @@ public final class OBJLoader {
         try (InputStream stream = OBJLoader.class.getClassLoader().getResourceAsStream(resourceName)) {
             if (stream == null) throw new IOException("Resource " + resourceName + " not found");
             return load(new InputStreamReader(stream));
+        }
+    }
+
+    // TODO better fallback than empty model
+    public static QuadModel loadOrEmpty(String resourceName) {
+        try {
+            return load(resourceName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ProtoPlayerModels.err("Could not load model " + resourceName + ", loading an empty model instead...");
+            return new QuadModel(new Face[0]);
         }
     }
 }

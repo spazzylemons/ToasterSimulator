@@ -1,12 +1,14 @@
 package me.spazzylemons.protoplayermodels.model.geometry;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexConsumer;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector4f;
+
+import javax.annotation.Nonnull;
 
 public class QuadModel {
     private final Face[] faces;
@@ -20,8 +22,8 @@ public class QuadModel {
     }
 
     public void render(
-            MatrixStack matrices,
-            IVertexConsumer vertices,
+            @Nonnull MatrixStack matrices,
+            @Nonnull IVertexBuilder vertices,
             int light,
             int overlay,
             float r,
