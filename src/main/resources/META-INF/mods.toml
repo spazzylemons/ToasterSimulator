@@ -1,0 +1,29 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="MIT"
+issueTrackerURL="https://www.github.com/spazzylemons/ProtoPlayerModels/issues/"
+
+[[mods]]
+modId="protoplayermodels"
+version="${file.jarVersion}"
+displayName="ProtoPlayerModels"
+displayURL="https://www.github.com/spazzylemons/ProtoPlayerModels/"
+# logoFile="logo.png"
+authors="spazzylemons"
+description='''
+toasters
+'''
+
+[[dependencies.protoplayermodels]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.protoplayermodels]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"
