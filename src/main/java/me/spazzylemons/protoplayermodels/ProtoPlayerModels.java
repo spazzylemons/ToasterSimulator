@@ -7,9 +7,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod("protoplayermodels")
+@Mod(Constants.MOD_ID)
 public class ProtoPlayerModels {
-    private static final Logger LOGGER = LogManager.getLogger("ProtoPlayerModels");
+    private static final Logger LOGGER = LogManager.getLogger(Constants.MOD_NAME);
 
     public ProtoPlayerModels() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
