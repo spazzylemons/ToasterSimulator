@@ -1,6 +1,7 @@
 package me.spazzylemons.protoplayermodels;
 
 import me.spazzylemons.protoplayermodels.render.ProtogenPlayerRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -8,6 +9,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Mod(Constants.MOD_ID)
@@ -33,11 +35,11 @@ public class ProtoPlayerModels {
         LOGGER.error(message);
     }
 
-    public static @Nullable ProtogenPlayerRenderer getRenderer() {
+    public static @Nonnull ProtogenPlayerRenderer getRenderer() {
+        if (renderer == null) {
+            // lazy-load this, because when the mod's loaded the entityrendermanager won't be
+            renderer = new ProtogenPlayerRenderer(Minecraft.getInstance().getEntityRenderDispatcher());
+        }
         return renderer;
-    }
-
-    public static void setRenderer(ProtogenPlayerRenderer renderer) {
-        ProtoPlayerModels.renderer = renderer;
     }
 }
