@@ -5,10 +5,10 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class Config {
     private final ForgeConfigSpec.BooleanValue enabled;
 
-    public Config(ForgeConfigSpec.Builder spec) {
-        enabled = spec
+    public Config(ForgeConfigSpec.Builder builder) {
+        enabled = builder
                 .comment("If true, the protogen model will be displayed instead of the vanilla model.")
-                .define("enabled", false);
+                .define("enabled", true);
     }
 
     public void save() {

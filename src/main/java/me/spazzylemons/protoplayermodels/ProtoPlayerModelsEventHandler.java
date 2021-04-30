@@ -2,10 +2,14 @@ package me.spazzylemons.protoplayermodels;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import me.spazzylemons.protoplayermodels.config.ConfigScreen;
 import me.spazzylemons.protoplayermodels.render.ProtogenPlayerRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.screen.CustomizeSkinScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.network.play.NetworkPlayerInfo;
 import net.minecraft.client.renderer.FirstPersonRenderer;
@@ -16,8 +20,10 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,13 +38,13 @@ import java.util.Map;
 public class ProtoPlayerModelsEventHandler {
     @SubscribeEvent
     public static void onRenderPlayer(RenderPlayerEvent event) {
-        // TODO add config
-        ProtogenPlayerRenderer renderer = ProtoPlayerModels.getRenderer();
+        // don't render the model if disabled
+        if (!ProtoPlayerModels.getConfig().isEnabled()) return;
         // prevent infinite recursion (ProtogenPlayerRenderer inherits from PlayerRenderer, and by making it render
         // here, it will call the event again and you'll have a bad time if you don't check the type here)
         if (event.getRenderer() instanceof ProtogenPlayerRenderer) return;
         // render it ourselves
-        renderer.render(
+        ProtoPlayerModels.getRenderer().render(
                 (AbstractClientPlayerEntity) event.getPlayer(),
                 0F, // i think this parameter goes unused?
                 event.getPartialRenderTick(),
@@ -163,7 +169,8 @@ public class ProtoPlayerModelsEventHandler {
     // TODO not sure if I need the synchronized, but if rendering is multi-threaded (doesn't look that way but idk),
     // then this could would cause weird rendering stuff
     public static synchronized void onRenderHand(RenderHandEvent event) {
-        // TODO add config
+        // don't render the model if disabled
+        if (!ProtoPlayerModels.getConfig().isEnabled()) return;
         try {
             getPlayerRenderers();
             savePlayerRenderers();
@@ -178,5 +185,20 @@ public class ProtoPlayerModelsEventHandler {
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
+
+    @SubscribeEvent
+    public static void onSomething(GuiScreenEvent.InitGuiEvent event) {
+        Screen screen = event.getGui();
+        if (!(screen instanceof CustomizeSkinScreen)) return;
+
+        event.addWidget(new Button(
+                screen.width / 2 - 100,
+                screen.height / 6 + 24 * 5,
+                200,
+                20,
+                new StringTextComponent("ProtoPlayerModels options..."),
+                button -> screen.getMinecraft().setScreen(new ConfigScreen(screen))
+        ));
     }
 }

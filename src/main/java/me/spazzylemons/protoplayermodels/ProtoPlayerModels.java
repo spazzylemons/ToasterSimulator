@@ -1,11 +1,17 @@
 package me.spazzylemons.protoplayermodels;
 
+import me.spazzylemons.protoplayermodels.config.Config;
 import me.spazzylemons.protoplayermodels.render.ProtogenPlayerRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,12 +24,24 @@ public class ProtoPlayerModels {
 
     private static @Nullable ProtogenPlayerRenderer renderer;
 
+    private static Config config;
+
     public ProtoPlayerModels() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
     }
 
     private void setup(FMLCommonSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(ProtoPlayerModelsEventHandler.class);
+
+        // There's probably a better way to do this that I'll encounter soon
+        Pair<Config, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Config::new);
+        config = specPair.getLeft();
+        ModLoadingContext ctx = ModLoadingContext.get();
+        ForgeConfigSpec spec = specPair.getRight();
+        ModConfig modConfig = new ModConfig(ModConfig.Type.COMMON, spec, ctx.getActiveContainer());
+        spec.setConfig(modConfig.getHandler().reader(FMLPaths.CONFIGDIR.get()).apply(modConfig));
+        ctx.getActiveContainer().addConfig(modConfig);
+
         log("Beep!");
     }
 
@@ -41,5 +59,9 @@ public class ProtoPlayerModels {
             renderer = new ProtogenPlayerRenderer(Minecraft.getInstance().getEntityRenderDispatcher());
         }
         return renderer;
+    }
+
+    public static @Nonnull Config getConfig() {
+        return config;
     }
 }
