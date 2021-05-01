@@ -1,6 +1,6 @@
-# ProtoPlayerModels
+# Toaster Simulator
 
-A simple mod to provide a set custom player model. Currently unfinished.
+Add protogen player models to your game.
 
 ## License
 

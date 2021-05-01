@@ -1,9 +1,9 @@
-package me.spazzylemons.protoplayermodels;
+package me.spazzylemons.toastersimulator;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import me.spazzylemons.protoplayermodels.model.OBJLoader;
-import me.spazzylemons.protoplayermodels.model.geometry.QuadModel;
-import me.spazzylemons.protoplayermodels.render.QuadModelRenderer;
+import me.spazzylemons.toastersimulator.model.OBJLoader;
+import me.spazzylemons.toastersimulator.model.geometry.QuadModel;
+import me.spazzylemons.toastersimulator.render.QuadModelRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
@@ -33,7 +33,7 @@ public class ProtogenPlayerModel<T extends LivingEntity> extends PlayerModel<T> 
             ((ObjectList<?>) cubesField.get(outer)).clear();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            ProtoPlayerModels.err("Could not clear a part of the player model, things might look a little weird");
+            ToasterSimulator.err("Could not clear a part of the player model, things might look a little weird");
         }
         // create custom model renderer, add to inner renderer
         inner.addChild(new QuadModelRenderer(this, quadModel));

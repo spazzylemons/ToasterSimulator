@@ -1,4 +1,4 @@
-package me.spazzylemons.protoplayermodels.model.geometry;
+package me.spazzylemons.toastersimulator.model.geometry;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;

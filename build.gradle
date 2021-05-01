@@ -11,9 +11,11 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
+def modId = 'toastersimulator'
+
 version = '0.0.1'
-group = 'me.spazzylemons.protoplayermodels'
-archivesBaseName = 'protoplayermodels'
+group = "me.spazzylemons.$modId"
+archivesBaseName = modId
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
@@ -48,7 +50,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'protoplayermodels', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', modId, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
                 examplemod {

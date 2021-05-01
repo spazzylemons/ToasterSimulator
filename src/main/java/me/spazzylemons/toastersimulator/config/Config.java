@@ -1,4 +1,4 @@
-package me.spazzylemons.protoplayermodels.config;
+package me.spazzylemons.toastersimulator.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 

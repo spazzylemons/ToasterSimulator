@@ -1,9 +1,9 @@
-package me.spazzylemons.protoplayermodels;
+package me.spazzylemons.toastersimulator;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.spazzylemons.protoplayermodels.config.ConfigScreen;
-import me.spazzylemons.protoplayermodels.render.ProtogenPlayerRenderer;
+import me.spazzylemons.toastersimulator.config.ConfigScreen;
+import me.spazzylemons.toastersimulator.render.ProtogenPlayerRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -35,16 +35,16 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class ProtoPlayerModelsEventHandler {
+public class MyEventHandler {
     @SubscribeEvent
     public static void onRenderPlayer(RenderPlayerEvent event) {
         // don't render the model if disabled
-        if (!ProtoPlayerModels.getConfig().isEnabled()) return;
+        if (!ToasterSimulator.getConfig().isEnabled()) return;
         // prevent infinite recursion (ProtogenPlayerRenderer inherits from PlayerRenderer, and by making it render
         // here, it will call the event again and you'll have a bad time if you don't check the type here)
         if (event.getRenderer() instanceof ProtogenPlayerRenderer) return;
         // render it ourselves
-        ProtoPlayerModels.getRenderer().render(
+        ToasterSimulator.getRenderer().render(
                 (AbstractClientPlayerEntity) event.getPlayer(),
                 0F, // i think this parameter goes unused?
                 event.getPartialRenderTick(),
@@ -137,7 +137,7 @@ public class ProtoPlayerModelsEventHandler {
     }
 
     private static void overwriteHandRenderSettings(Map<String, PlayerRenderer> playerRenderers) throws IllegalAccessException {
-        ProtogenPlayerRenderer renderer = ProtoPlayerModels.getRenderer();
+        ProtogenPlayerRenderer renderer = ToasterSimulator.getRenderer();
         playerRenderers.put("default", renderer);
         playerRenderers.put("slim", renderer);
         if (info != null) {
@@ -170,7 +170,7 @@ public class ProtoPlayerModelsEventHandler {
     // then this could would cause weird rendering stuff
     public static synchronized void onRenderHand(RenderHandEvent event) {
         // don't render the model if disabled
-        if (!ProtoPlayerModels.getConfig().isEnabled()) return;
+        if (!ToasterSimulator.getConfig().isEnabled()) return;
         try {
             getPlayerRenderers();
             savePlayerRenderers();
@@ -197,7 +197,7 @@ public class ProtoPlayerModelsEventHandler {
                 screen.height / 6 + 24 * 5,
                 200,
                 20,
-                new StringTextComponent("ProtoPlayerModels options..."),
+                new StringTextComponent(Constants.MOD_NAME + " options..."),
                 button -> screen.getMinecraft().setScreen(new ConfigScreen(screen))
         ));
     }

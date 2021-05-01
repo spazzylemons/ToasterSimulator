@@ -1,8 +1,8 @@
-package me.spazzylemons.protoplayermodels.render;
+package me.spazzylemons.toastersimulator.render;
 
-import me.spazzylemons.protoplayermodels.Constants;
-import me.spazzylemons.protoplayermodels.ProtoPlayerModels;
-import me.spazzylemons.protoplayermodels.ProtogenPlayerModel;
+import me.spazzylemons.toastersimulator.Constants;
+import me.spazzylemons.toastersimulator.ToasterSimulator;
+import me.spazzylemons.toastersimulator.ProtogenPlayerModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -38,7 +38,7 @@ public class ProtogenPlayerRenderer extends PlayerRenderer {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            ProtoPlayerModels.err("Couldn't read the texture, texture will be black.");
+            ToasterSimulator.err("Couldn't read the texture, texture will be black.");
             nativeImage = new NativeImage(1, 1, true);
         }
         DynamicTexture texture = new DynamicTexture(nativeImage);

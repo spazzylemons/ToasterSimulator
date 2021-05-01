@@ -1,27 +1,27 @@
 modLoader="javafml"
 loaderVersion="[36,)"
 license="MIT"
-issueTrackerURL="https://www.github.com/spazzylemons/ProtoPlayerModels/issues/"
+issueTrackerURL="https://www.github.com/spazzylemons/ToasterSimulator/issues/"
 
 [[mods]]
-modId="protoplayermodels"
+modId="toastersimulator"
 version="${file.jarVersion}"
-displayName="ProtoPlayerModels"
-displayURL="https://www.github.com/spazzylemons/ProtoPlayerModels/"
+displayName="Toaster Simulator"
+displayURL="https://www.github.com/spazzylemons/ToasterSimulator/"
 # logoFile="logo.png"
 authors="spazzylemons"
 description='''
 toasters
 '''
 
-[[dependencies.protoplayermodels]]
+[[dependencies.toastersimulator]]
     modId="forge"
     mandatory=true
     versionRange="[36,)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.protoplayermodels]]
+[[dependencies.toastersimulator]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.16.5,1.17)"

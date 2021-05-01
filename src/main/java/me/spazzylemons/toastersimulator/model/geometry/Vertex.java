@@ -1,4 +1,4 @@
-package me.spazzylemons.protoplayermodels.model.geometry;
+package me.spazzylemons.toastersimulator.model.geometry;
 
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3f;

@@ -1,9 +1,9 @@
-package me.spazzylemons.protoplayermodels.model;
+package me.spazzylemons.toastersimulator.model;
 
-import me.spazzylemons.protoplayermodels.ProtoPlayerModels;
-import me.spazzylemons.protoplayermodels.model.geometry.Face;
-import me.spazzylemons.protoplayermodels.model.geometry.QuadModel;
-import me.spazzylemons.protoplayermodels.model.geometry.Vertex;
+import me.spazzylemons.toastersimulator.ToasterSimulator;
+import me.spazzylemons.toastersimulator.model.geometry.Face;
+import me.spazzylemons.toastersimulator.model.geometry.QuadModel;
+import me.spazzylemons.toastersimulator.model.geometry.Vertex;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -73,7 +73,7 @@ public final class OBJLoader {
             return load(resourceName);
         } catch (Exception e) {
             e.printStackTrace();
-            ProtoPlayerModels.err("Could not load model " + resourceName + ", loading an empty model instead...");
+            ToasterSimulator.err("Could not load model " + resourceName + ", loading an empty model instead...");
             return new QuadModel(new Face[0]);
         }
     }

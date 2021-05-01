@@ -1,7 +1,7 @@
-package me.spazzylemons.protoplayermodels;
+package me.spazzylemons.toastersimulator;
 
-import me.spazzylemons.protoplayermodels.config.Config;
-import me.spazzylemons.protoplayermodels.render.ProtogenPlayerRenderer;
+import me.spazzylemons.toastersimulator.config.Config;
+import me.spazzylemons.toastersimulator.render.ProtogenPlayerRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,19 +19,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Mod(Constants.MOD_ID)
-public class ProtoPlayerModels {
+public class ToasterSimulator {
     private static final Logger LOGGER = LogManager.getLogger(Constants.MOD_NAME);
 
     private static @Nullable ProtogenPlayerRenderer renderer;
 
     private static Config config;
 
-    public ProtoPlayerModels() {
+    public ToasterSimulator() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
     }
 
     private void setup(FMLCommonSetupEvent event) {
-        MinecraftForge.EVENT_BUS.register(ProtoPlayerModelsEventHandler.class);
+        MinecraftForge.EVENT_BUS.register(MyEventHandler.class);
 
         // There's probably a better way to do this that I'll encounter soon
         Pair<Config, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Config::new);
