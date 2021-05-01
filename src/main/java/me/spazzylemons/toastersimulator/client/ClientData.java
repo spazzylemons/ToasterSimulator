@@ -44,7 +44,7 @@ public final class ClientData {
     public static @Nonnull ProtogenPlayerRenderer getRenderer() {
         if (renderer == null) {
             // lazy-load this, because when the mod's loaded the EntityRenderManager won't be
-            renderer = new ProtogenPlayerRenderer(Minecraft.getInstance().getEntityRenderDispatcher());
+            renderer = new ProtogenPlayerRenderer(ClientConstants.mc.getEntityRenderDispatcher());
         }
         return renderer;
     }

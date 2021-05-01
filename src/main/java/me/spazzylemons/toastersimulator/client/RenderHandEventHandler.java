@@ -134,8 +134,8 @@ public class RenderHandEventHandler {
 
     private static void renderArm(RenderHandEvent event) throws InvocationTargetException, IllegalAccessException {
         renderArmWithItemMethod.invoke(
-                Minecraft.getInstance().getItemInHandRenderer(),
-                Minecraft.getInstance().player,
+                ClientConstants.mc.getItemInHandRenderer(),
+                ClientConstants.mc.player,
                 event.getPartialTicks(),
                 event.getInterpolatedPitch(),
                 event.getHand(),

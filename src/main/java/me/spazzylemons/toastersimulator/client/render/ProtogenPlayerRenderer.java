@@ -45,6 +45,6 @@ public class ProtogenPlayerRenderer extends PlayerRenderer {
             nativeImage = new NativeImage(1, 1, true);
         }
         DynamicTexture texture = new DynamicTexture(nativeImage);
-        Minecraft.getInstance().getTextureManager().register(ClientConstants.textureResource, texture);
+        ClientConstants.mc.getTextureManager().register(ClientConstants.textureResource, texture);
     }
 }
