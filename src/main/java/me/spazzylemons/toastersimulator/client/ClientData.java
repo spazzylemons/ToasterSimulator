@@ -23,7 +23,9 @@ public final class ClientData {
     private ClientData() {}
 
     public static void setup() {
-        MinecraftForge.EVENT_BUS.register(MyEventHandler.class);
+        MinecraftForge.EVENT_BUS.register(InitGuiEventHandler.class);
+        MinecraftForge.EVENT_BUS.register(RenderHandEventHandler.class);
+        MinecraftForge.EVENT_BUS.register(RenderPlayerEventHandler.class);
 
         // TODO is there a better way to do this?
         Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);

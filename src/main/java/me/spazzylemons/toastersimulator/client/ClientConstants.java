@@ -1,6 +1,7 @@
 package me.spazzylemons.toastersimulator.client;
 
 import me.spazzylemons.toastersimulator.Constants;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -10,4 +11,6 @@ public final class ClientConstants {
     private ClientConstants() {}
 
     public static final ResourceLocation textureResource = new ResourceLocation(Constants.MOD_ID, "proto");
+
+    public static final Minecraft mc = Minecraft.getInstance();
 }
