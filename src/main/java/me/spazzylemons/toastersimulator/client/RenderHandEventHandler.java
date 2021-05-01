@@ -33,7 +33,7 @@ public class RenderHandEventHandler {
     private static final Method renderArmWithItemMethod =
             ObfuscationReflectionHelper.findMethod(
                     FirstPersonRenderer.class,
-                    "renderArmWithItem",
+                    "func_228405_a_",
                     AbstractClientPlayerEntity.class,
                     float.class,
                     float.class,
@@ -48,7 +48,7 @@ public class RenderHandEventHandler {
 
     private static class RendererSwapper implements AutoCloseable {
         private static final Field playerRenderersField =
-                ObfuscationReflectionHelper.findField(EntityRendererManager.class, "playerRenderers");
+                ObfuscationReflectionHelper.findField(EntityRendererManager.class, "field_178636_l");
 
         private final Map<String, PlayerRenderer> playerRenderers;
         private final PlayerRenderer defaultRenderer;
@@ -79,11 +79,11 @@ public class RenderHandEventHandler {
 
     private static class TextureSwapper implements AutoCloseable {
         private static final Field textureLocationsField =
-                ObfuscationReflectionHelper.findField(NetworkPlayerInfo.class, "textureLocations");
+                ObfuscationReflectionHelper.findField(NetworkPlayerInfo.class, "field_187107_a");
         private static final Field steveSkinLocationField =
-                ObfuscationReflectionHelper.findField(DefaultPlayerSkin.class, "STEVE_SKIN_LOCATION");
+                ObfuscationReflectionHelper.findField(DefaultPlayerSkin.class, "field_177337_a");
         private static final Field alexSkinLocationField =
-                ObfuscationReflectionHelper.findField(DefaultPlayerSkin.class, "ALEX_SKIN_LOCATION");
+                ObfuscationReflectionHelper.findField(DefaultPlayerSkin.class, "field_177336_b");
 
         private final Map<MinecraftProfileTexture.Type, ResourceLocation> textureLocations;
 

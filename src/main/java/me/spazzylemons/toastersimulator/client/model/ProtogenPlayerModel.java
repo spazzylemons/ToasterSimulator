@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
 @OnlyIn(Dist.CLIENT)
 public class ProtogenPlayerModel<T extends LivingEntity> extends PlayerModel<T> {
     private static final Field cubesField =
-            ObfuscationReflectionHelper.findField(ModelRenderer.class, "cubes");
+            ObfuscationReflectionHelper.findField(ModelRenderer.class, "field_78804_l");
 
     public ProtogenPlayerModel(float scale) {
         super(scale, false);
