@@ -21,6 +21,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
     mappings channel: 'official', version: '1.16.5'
+
     runs {
         client {
             workingDirectory project.file('run')
@@ -28,7 +29,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                toastersimulator {
                     source sourceSets.main
                 }
             }
@@ -40,7 +41,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                toastersimulator {
                     source sourceSets.main
                 }
             }
@@ -53,7 +54,7 @@ minecraft {
             args '--mod', modId, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                examplemod {
+                toastersimulator {
                     source sourceSets.main
                 }
             }
@@ -67,7 +68,6 @@ sourceSets.main.resources {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.13'
-
 }
 
 jar.finalizedBy('reobfJar')
