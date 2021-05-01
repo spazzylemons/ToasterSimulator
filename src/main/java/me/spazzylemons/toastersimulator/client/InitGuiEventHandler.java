@@ -16,7 +16,6 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
 public class InitGuiEventHandler {
