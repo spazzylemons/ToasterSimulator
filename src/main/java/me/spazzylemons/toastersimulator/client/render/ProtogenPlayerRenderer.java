@@ -1,8 +1,8 @@
-package me.spazzylemons.toastersimulator.render;
+package me.spazzylemons.toastersimulator.client.render;
 
-import me.spazzylemons.toastersimulator.Constants;
 import me.spazzylemons.toastersimulator.ToasterSimulator;
-import me.spazzylemons.toastersimulator.ProtogenPlayerModel;
+import me.spazzylemons.toastersimulator.client.ClientConstants;
+import me.spazzylemons.toastersimulator.client.model.ProtogenPlayerModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -10,11 +10,14 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 
+@OnlyIn(Dist.CLIENT)
 public class ProtogenPlayerRenderer extends PlayerRenderer {
     public ProtogenPlayerRenderer(EntityRendererManager manager) {
         super(manager);
@@ -23,7 +26,7 @@ public class ProtogenPlayerRenderer extends PlayerRenderer {
 
     @Override
     public @Nonnull ResourceLocation getTextureLocation(@Nonnull AbstractClientPlayerEntity entity) {
-        return Constants.textureResource;
+        return ClientConstants.textureResource;
     }
 
     static {
@@ -42,6 +45,6 @@ public class ProtogenPlayerRenderer extends PlayerRenderer {
             nativeImage = new NativeImage(1, 1, true);
         }
         DynamicTexture texture = new DynamicTexture(nativeImage);
-        Minecraft.getInstance().getTextureManager().register(Constants.textureResource, texture);
+        Minecraft.getInstance().getTextureManager().register(ClientConstants.textureResource, texture);
     }
 }

@@ -1,11 +1,11 @@
-package me.spazzylemons.toastersimulator.config;
+package me.spazzylemons.toastersimulator.client.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class Config {
+public class ClientConfig {
     private final ForgeConfigSpec.BooleanValue enabled;
 
-    public Config(ForgeConfigSpec.Builder builder) {
+    public ClientConfig(ForgeConfigSpec.Builder builder) {
         enabled = builder
                 .comment("If true, the protogen model will be displayed instead of the vanilla model.")
                 .define("enabled", true);

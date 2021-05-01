@@ -1,11 +1,13 @@
-package me.spazzylemons.toastersimulator.model;
+package me.spazzylemons.toastersimulator.client.model;
 
 import me.spazzylemons.toastersimulator.ToasterSimulator;
-import me.spazzylemons.toastersimulator.model.geometry.Face;
-import me.spazzylemons.toastersimulator.model.geometry.QuadModel;
-import me.spazzylemons.toastersimulator.model.geometry.Vertex;
+import me.spazzylemons.toastersimulator.client.model.geometry.Face;
+import me.spazzylemons.toastersimulator.client.model.geometry.QuadModel;
+import me.spazzylemons.toastersimulator.client.model.geometry.Vertex;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
+@OnlyIn(Dist.CLIENT)
 public final class OBJLoader {
     private OBJLoader() {}
 

@@ -1,8 +1,8 @@
-package me.spazzylemons.toastersimulator.config;
+package me.spazzylemons.toastersimulator.client.config;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import me.spazzylemons.toastersimulator.Constants;
-import me.spazzylemons.toastersimulator.ToasterSimulator;
+import me.spazzylemons.toastersimulator.client.ClientData;
 import net.minecraft.client.gui.DialogTexts;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -27,7 +27,7 @@ public class ConfigScreen extends Screen {
         int[] i = {0};
 
         addButton(i, createIsEnabledText(), button -> {
-            Config config = ToasterSimulator.getConfig();
+            ClientConfig config = ClientData.getConfig();
             config.setEnabled(!config.isEnabled());
             config.save();
             button.setMessage(createIsEnabledText());
@@ -61,7 +61,7 @@ public class ConfigScreen extends Screen {
     private static ITextComponent createIsEnabledText() {
         return DialogTexts.optionStatus(
                 new StringTextComponent("Enable protogen model"),
-                ToasterSimulator.getConfig().isEnabled()
+                ClientData.getConfig().isEnabled()
         );
     }
 }

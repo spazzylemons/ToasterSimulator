@@ -1,9 +1,10 @@
-package me.spazzylemons.toastersimulator;
+package me.spazzylemons.toastersimulator.client;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.spazzylemons.toastersimulator.config.ConfigScreen;
-import me.spazzylemons.toastersimulator.render.ProtogenPlayerRenderer;
+import me.spazzylemons.toastersimulator.Constants;
+import me.spazzylemons.toastersimulator.client.config.ConfigScreen;
+import me.spazzylemons.toastersimulator.client.render.ProtogenPlayerRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -39,12 +40,12 @@ public class MyEventHandler {
     @SubscribeEvent
     public static void onRenderPlayer(RenderPlayerEvent event) {
         // don't render the model if disabled
-        if (!ToasterSimulator.getConfig().isEnabled()) return;
+        if (!ClientData.getConfig().isEnabled()) return;
         // prevent infinite recursion (ProtogenPlayerRenderer inherits from PlayerRenderer, and by making it render
         // here, it will call the event again and you'll have a bad time if you don't check the type here)
         if (event.getRenderer() instanceof ProtogenPlayerRenderer) return;
         // render it ourselves
-        ToasterSimulator.getRenderer().render(
+        ClientData.getRenderer().render(
                 (AbstractClientPlayerEntity) event.getPlayer(),
                 0F, // i think this parameter goes unused?
                 event.getPartialRenderTick(),
@@ -137,14 +138,14 @@ public class MyEventHandler {
     }
 
     private static void overwriteHandRenderSettings(Map<String, PlayerRenderer> playerRenderers) throws IllegalAccessException {
-        ProtogenPlayerRenderer renderer = ToasterSimulator.getRenderer();
+        ProtogenPlayerRenderer renderer = ClientData.getRenderer();
         playerRenderers.put("default", renderer);
         playerRenderers.put("slim", renderer);
         if (info != null) {
-            textureLocations.put(MinecraftProfileTexture.Type.SKIN, Constants.textureResource);
+            textureLocations.put(MinecraftProfileTexture.Type.SKIN, ClientConstants.textureResource);
         } else {
-            steveSkinLocationField.set(null, Constants.textureResource);
-            alexSkinLocationField.set(null, Constants.textureResource);
+            steveSkinLocationField.set(null, ClientConstants.textureResource);
+            alexSkinLocationField.set(null, ClientConstants.textureResource);
         }
     }
 
@@ -170,7 +171,7 @@ public class MyEventHandler {
     // then this could would cause weird rendering stuff
     public static synchronized void onRenderHand(RenderHandEvent event) {
         // don't render the model if disabled
-        if (!ToasterSimulator.getConfig().isEnabled()) return;
+        if (!ClientData.getConfig().isEnabled()) return;
         try {
             getPlayerRenderers();
             savePlayerRenderers();

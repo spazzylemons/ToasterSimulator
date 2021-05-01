@@ -1,7 +1,10 @@
-package me.spazzylemons.toastersimulator.model.geometry;
+package me.spazzylemons.toastersimulator.client.model.geometry;
 
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class Face {
     private final Vertex[] vertices;
     private final Vector3f normal;

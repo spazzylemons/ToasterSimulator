@@ -1,8 +1,8 @@
-package me.spazzylemons.toastersimulator.render;
+package me.spazzylemons.toastersimulator.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import me.spazzylemons.toastersimulator.model.geometry.QuadModel;
+import me.spazzylemons.toastersimulator.client.model.geometry.QuadModel;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraftforge.api.distmarker.Dist;

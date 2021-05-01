@@ -1,16 +1,19 @@
-package me.spazzylemons.toastersimulator;
+package me.spazzylemons.toastersimulator.client.model;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import me.spazzylemons.toastersimulator.model.OBJLoader;
-import me.spazzylemons.toastersimulator.model.geometry.QuadModel;
-import me.spazzylemons.toastersimulator.render.QuadModelRenderer;
+import me.spazzylemons.toastersimulator.ToasterSimulator;
+import me.spazzylemons.toastersimulator.client.model.geometry.QuadModel;
+import me.spazzylemons.toastersimulator.client.render.QuadModelRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 
+@OnlyIn(Dist.CLIENT)
 public class ProtogenPlayerModel<T extends LivingEntity> extends PlayerModel<T> {
     private static final Field cubesField =
             ObfuscationReflectionHelper.findField(ModelRenderer.class, "cubes");
