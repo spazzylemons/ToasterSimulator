@@ -8,8 +8,5 @@ public final class Constants {
     public static final String MOD_NAME = "Toaster Simulator";
     public static final String MOD_ID = "toastersimulator";
 
-    public static final String CONFIG_FOLDER = "config";
-    public static final String CONFIG_FILE = "config.properties";
-
     public static final ResourceLocation textureResource = new ResourceLocation(MOD_ID, "proto");
 }
