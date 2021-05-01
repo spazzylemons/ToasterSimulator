@@ -1,9 +1,10 @@
-package me.spazzylemons.toastersimulator.client;
+package me.spazzylemons.toastersimulator.client.event;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import me.spazzylemons.toastersimulator.client.ClientConstants;
+import me.spazzylemons.toastersimulator.client.ClientData;
 import me.spazzylemons.toastersimulator.client.render.ProtogenPlayerRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.network.play.NetworkPlayerInfo;

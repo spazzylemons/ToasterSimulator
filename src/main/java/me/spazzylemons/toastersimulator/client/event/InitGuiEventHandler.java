@@ -1,4 +1,4 @@
-package me.spazzylemons.toastersimulator.client;
+package me.spazzylemons.toastersimulator.client.event;
 
 import me.spazzylemons.toastersimulator.Constants;
 import me.spazzylemons.toastersimulator.client.config.ConfigScreen;

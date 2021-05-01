@@ -1,8 +1,10 @@
 package me.spazzylemons.toastersimulator.client;
 
 import me.spazzylemons.toastersimulator.client.config.ClientConfig;
+import me.spazzylemons.toastersimulator.client.event.InitGuiEventHandler;
+import me.spazzylemons.toastersimulator.client.event.RenderHandEventHandler;
+import me.spazzylemons.toastersimulator.client.event.RenderPlayerEventHandler;
 import me.spazzylemons.toastersimulator.client.render.ProtogenPlayerRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;

@@ -1,5 +1,6 @@
-package me.spazzylemons.toastersimulator.client;
+package me.spazzylemons.toastersimulator.client.event;
 
+import me.spazzylemons.toastersimulator.client.ClientData;
 import me.spazzylemons.toastersimulator.client.render.ProtogenPlayerRenderer;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;

@@ -3,7 +3,6 @@ package me.spazzylemons.toastersimulator.client.render;
 import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.client.ClientConstants;
 import me.spazzylemons.toastersimulator.client.model.ProtogenPlayerModel;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
