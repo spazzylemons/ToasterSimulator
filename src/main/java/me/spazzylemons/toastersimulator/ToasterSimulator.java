@@ -21,7 +21,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -30,7 +32,7 @@ import java.util.function.Function;
 public class ToasterSimulator {
     private static final Logger LOGGER = LogManager.getLogger(Constants.MOD_NAME);
 
-    private static final Set<UUID> protogens = new HashSet<>();
+    private static final Map<UUID, byte[]> protogens = new HashMap<>();
 
     private static SimpleChannel channel;
 
@@ -89,7 +91,7 @@ public class ToasterSimulator {
         LOGGER.error(message);
     }
 
-    public static Set<UUID> getProtogens() {
+    public static Map<UUID, byte[]> getProtogens() {
         return protogens;
     }
 

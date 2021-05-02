@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
+import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderHandEventHandler {
@@ -109,13 +110,20 @@ public class RenderHandEventHandler {
         public TextureSwapper() throws IllegalAccessException {
             ClientPlayerEntity player = ClientConstants.mc.player;
             assert player != null; // Player should not be null when this object is used
-            NetworkPlayerInfo info = player.connection.getPlayerInfo(player.getUUID());
+            UUID playerId = player.getUUID();
+            NetworkPlayerInfo info = player.connection.getPlayerInfo(playerId);
+            ResourceLocation texture;
+            if (ClientData.isModSupportedByServer()) {
+                texture = ClientData.getTextureLocation(playerId);
+            } else {
+                texture = ClientConstants.localTextureResource;
+            }
             if (info != null) {
                 // Get the texture locations from the NetworkPlayerInfo
                 textureLocations = (Map<MinecraftProfileTexture.Type, ResourceLocation>) textureLocationsField.get(info);
                 playerSkinLocation = textureLocations.get(MinecraftProfileTexture.Type.SKIN);
                 // Put in our own texture
-                textureLocations.put(MinecraftProfileTexture.Type.SKIN, ClientConstants.textureResource);
+                textureLocations.put(MinecraftProfileTexture.Type.SKIN, texture);
                 // Not using these fields
                 steveSkinLocation = null;
                 alexSkinLocation = null;
@@ -124,8 +132,8 @@ public class RenderHandEventHandler {
                 steveSkinLocation = (ResourceLocation) steveSkinLocationField.get(null);
                 alexSkinLocation = (ResourceLocation) alexSkinLocationField.get(null);
                 // Put in our own texture
-                steveSkinLocationField.set(null, ClientConstants.textureResource);
-                alexSkinLocationField.set(null, ClientConstants.textureResource);
+                steveSkinLocationField.set(null, texture);
+                alexSkinLocationField.set(null, texture);
                 // Not using these fields
                 textureLocations = null;
                 playerSkinLocation = null;

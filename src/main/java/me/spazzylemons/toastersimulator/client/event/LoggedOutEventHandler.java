@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class LoggedOutEventHandler {
     @SubscribeEvent
     public static void onLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
-        ClientData.getProtogens().clear();
+        ClientData.clearProtogens();
         ClientData.setModSupportedByServer(false);
     }
 }

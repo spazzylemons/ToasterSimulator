@@ -33,6 +33,10 @@ public class ConfigScreen extends Screen {
             button.setMessage(createIsEnabledText());
         });
 
+        addButton(i, new StringTextComponent("Reload texture"), button -> {
+            ClientData.getConfig().reloadTexture();
+        });
+
         ++i[0]; // section break
 
         addButton(i, DialogTexts.GUI_DONE, button -> {

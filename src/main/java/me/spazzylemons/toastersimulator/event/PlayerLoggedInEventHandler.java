@@ -8,6 +8,8 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import java.nio.ByteBuffer;
+import java.util.Map;
 import java.util.UUID;
 
 public class PlayerLoggedInEventHandler {
@@ -16,8 +18,9 @@ public class PlayerLoggedInEventHandler {
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
         PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with(() -> player);
         ToasterSimulator.getChannel().send(target, new SProtogenSupportedMessage());
-        for (UUID playerId : ToasterSimulator.getProtogens()) {
-            ToasterSimulator.getChannel().send(target, new SProtogenModelUpdateMessage(playerId, true));
+        for (Map.Entry<UUID, byte[]> entry : ToasterSimulator.getProtogens().entrySet()) {
+            SProtogenModelUpdateMessage message = new SProtogenModelUpdateMessage(entry.getKey(), true, entry.getValue());
+            ToasterSimulator.getChannel().send(target, message);
         }
     }
 }

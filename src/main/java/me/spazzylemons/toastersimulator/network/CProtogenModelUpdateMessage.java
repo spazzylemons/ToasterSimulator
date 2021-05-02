@@ -7,25 +7,48 @@ import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-import java.util.Set;
+import java.io.IOException;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 public class CProtogenModelUpdateMessage implements AutoRegistrableMessage {
     private final boolean enabled;
+    private final byte[] texture;
 
-    public CProtogenModelUpdateMessage(boolean enabled) {
+    public CProtogenModelUpdateMessage(boolean enabled, byte[] texture) {
         this.enabled = enabled;
+        if (enabled) {
+            this.texture = texture;
+        } else {
+            this.texture = null;
+        }
     }
 
     @SuppressWarnings("unused") // used via reflection
     public CProtogenModelUpdateMessage(PacketBuffer buffer) {
         enabled = buffer.readBoolean();
+        if (enabled) {
+            try {
+                texture = new byte[ImageTransfer.IMAGE_BYTE_SIZE];
+                ImageTransfer.readCompressed(texture, buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            texture = null;
+        }
     }
 
     @Override
     public void encode(PacketBuffer buffer) {
         buffer.writeBoolean(enabled);
+        if (enabled) {
+            try {
+                ImageTransfer.writeCompressed(texture, buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
@@ -37,15 +60,14 @@ public class CProtogenModelUpdateMessage implements AutoRegistrableMessage {
             // need the player to really do anything useful with this message
             if (player == null) return;
             UUID playerId = player.getUUID();
-            Set<UUID> protogens = ToasterSimulator.getProtogens();
             if (enabled) {
-                protogens.add(playerId);
+                ToasterSimulator.getProtogens().put(playerId, texture);
             } else {
-                protogens.remove(playerId);
+                ToasterSimulator.getProtogens().remove(playerId);
             }
             ToasterSimulator.getChannel().send(
                     PacketDistributor.ALL.noArg(),
-                    new SProtogenModelUpdateMessage(playerId, enabled)
+                    new SProtogenModelUpdateMessage(playerId, enabled, texture)
             );
         });
         ctx.get().setPacketHandled(true);

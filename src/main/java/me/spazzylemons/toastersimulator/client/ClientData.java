@@ -1,5 +1,6 @@
 package me.spazzylemons.toastersimulator.client;
 
+import me.spazzylemons.toastersimulator.Constants;
 import me.spazzylemons.toastersimulator.client.config.ClientConfig;
 import me.spazzylemons.toastersimulator.client.event.InitGuiEventHandler;
 import me.spazzylemons.toastersimulator.client.event.LoggedInEventHandler;
@@ -7,7 +8,12 @@ import me.spazzylemons.toastersimulator.client.event.LoggedOutEventHandler;
 import me.spazzylemons.toastersimulator.client.event.RenderHandEventHandler;
 import me.spazzylemons.toastersimulator.client.event.RenderPlayerEventHandler;
 import me.spazzylemons.toastersimulator.client.render.ProtogenPlayerRenderer;
+import me.spazzylemons.toastersimulator.network.ImageTransfer;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -61,8 +67,25 @@ public final class ClientData {
         return renderer;
     }
 
-    public static @Nonnull Set<UUID> getProtogens() {
-        return protogens;
+    public static void addProtogen(UUID playerId, byte[] buffer) {
+        boolean failure = true;
+        NativeImage image = ImageTransfer.bufferToImage(buffer);
+        try {
+            registerTexture(image, playerId);
+            protogens.add(playerId);
+            failure = false;
+        } finally {
+            if (failure) image.close();
+        }
+    }
+
+    public static void removeProtogen(UUID playerId) {
+        protogens.remove(playerId);
+        unregisterTexture(playerId);
+    }
+
+    public static void clearProtogens() {
+        protogens.clear();
     }
 
     public static boolean isModSupportedByServer() {
@@ -83,8 +106,33 @@ public final class ClientData {
         if (modSupportedByServer) {
             return protogens.contains(playerId);
         } else {
-            ClientPlayerEntity player = ClientConstants.mc.player;
-            return player != null && player.getUUID() == playerId;
+            return isPlayerIdClientPlayerId(playerId);
         }
+    }
+
+    private static boolean isPlayerIdClientPlayerId(UUID playerId) {
+        ClientPlayerEntity player = ClientConstants.mc.player;
+        return player != null && player.getUUID() == playerId;
+    }
+
+    private static void registerTexture(NativeImage image, UUID playerId) {
+        // unregister to free existing texture, if present
+        unregisterTexture(playerId);
+        // create texture
+        DynamicTexture texture = new DynamicTexture(image);
+        TextureManager manager = ClientConstants.mc.getTextureManager();
+        manager.register(getTextureLocation(playerId), texture);
+    }
+
+    private static void unregisterTexture(UUID playerId) {
+        TextureManager manager = ClientConstants.mc.getTextureManager();
+        ResourceLocation location = getTextureLocation(playerId);
+        DynamicTexture texture = (DynamicTexture) manager.getTexture(location);
+        if (texture != null) texture.close();
+        manager.release(location);
+    }
+
+    public static ResourceLocation getTextureLocation(UUID playerId) {
+        return new ResourceLocation(Constants.MOD_ID, "texture-" + playerId.toString());
     }
 }
