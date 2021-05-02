@@ -25,6 +25,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
@@ -85,6 +86,17 @@ public class RenderHandEventHandler {
                 ObfuscationReflectionHelper.findField(DefaultPlayerSkin.class, "field_177337_a");
         private static final Field alexSkinLocationField =
                 ObfuscationReflectionHelper.findField(DefaultPlayerSkin.class, "field_177336_b");
+
+        static {
+            try {
+                Field modifiersField = Field.class.getDeclaredField("modifiers");
+                modifiersField.setAccessible(true);
+                modifiersField.setInt(steveSkinLocationField, steveSkinLocationField.getModifiers() & ~Modifier.FINAL);
+                modifiersField.setInt(alexSkinLocationField, alexSkinLocationField.getModifiers() & ~Modifier.FINAL);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
 
         private final Map<MinecraftProfileTexture.Type, ResourceLocation> textureLocations;
 
@@ -153,8 +165,8 @@ public class RenderHandEventHandler {
     @SubscribeEvent
     // TODO not sure if I need the synchronized, since rendering doesn't seem multi-threaded, but i might be wrong
     public static synchronized void onRenderHand(RenderHandEvent event) {
-        // don't render the model if disabled
-        if (!ClientData.getConfig().isEnabled()) return;
+        // don't render the model if the player doesn't have it
+        if (!ClientData.areWeAProtogen()) return;
         try {
             try (RendererSwapper rendererSwapper = new RendererSwapper()) {
                 try (TextureSwapper textureSwapper = new TextureSwapper()) {

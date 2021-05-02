@@ -12,8 +12,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class RenderPlayerEventHandler {
     @SubscribeEvent
     public static void onRenderPlayer(RenderPlayerEvent.Pre event) {
-        // don't render the model if disabled
-        if (!ClientData.getConfig().isEnabled()) return;
+        // don't render the model if the player doesn't have it
+        if (!ClientData.isPlayerAProtogen(event.getPlayer().getUUID())) return;
         // prevent infinite recursion (ProtogenPlayerRenderer inherits from PlayerRenderer, and by making it render
         // here, it will call the event again and you'll have a bad time if you don't check the type here)
         if (event.getRenderer() instanceof ProtogenPlayerRenderer) return;
