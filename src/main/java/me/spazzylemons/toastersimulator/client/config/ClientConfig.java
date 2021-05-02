@@ -1,19 +1,23 @@
 package me.spazzylemons.toastersimulator.client.config;
 
+import me.spazzylemons.toastersimulator.Constants;
 import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.client.ClientConstants;
-import me.spazzylemons.toastersimulator.network.CProtogenModelUpdateMessage;
 import me.spazzylemons.toastersimulator.client.util.ImageConversion;
+import me.spazzylemons.toastersimulator.network.CProtogenModelUpdateMessage;
+import me.spazzylemons.toastersimulator.util.Exceptions;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 
+import javax.annotation.Nonnull;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -22,13 +26,14 @@ import java.nio.channels.ReadableByteChannel;
 @OnlyIn(Dist.CLIENT)
 public class ClientConfig {
     private final ForgeConfigSpec.BooleanValue enabled;
-    private final byte[] texture = new byte[ImageConversion.IMAGE_BYTE_SIZE];
-    private NativeImage localImage;
+    private final byte[] texture = new byte[Constants.TEXTURE_BYTE_SIZE];
+    private @Nonnull NativeImage localImage;
 
     public ClientConfig(ForgeConfigSpec.Builder builder) {
         enabled = builder
                 .comment("If true, the protogen model will be displayed instead of the vanilla model.")
                 .define("enabled", true);
+        localImage = new NativeImage(Constants.TEXTURE_WIDTH, Constants.TEXTURE_HEIGHT, true);
         reloadTexture();
     }
 
@@ -38,13 +43,12 @@ public class ClientConfig {
 
     public void reloadTexture() {
         loadTexture(texture);
-        NativeImage newImage = ImageConversion.bufferToImage(64, 64, texture);
-        try {
-            if (localImage != null) localImage.close();
-        } catch (Exception e) {
-            newImage.close();
-            throw e;
-        }
+        NativeImage newImage = ImageConversion.bufferToImage(
+                Constants.TEXTURE_WIDTH,
+                Constants.TEXTURE_HEIGHT,
+                texture
+        );
+        Exceptions.wrapChecked(() -> Exceptions.closeOnFailure(newImage, localImage::close));
         localImage = newImage;
         DynamicTexture texture = new DynamicTexture(localImage);
         ClientConstants.mc.getTextureManager().register(ClientConstants.localTextureResource, texture);
@@ -67,10 +71,10 @@ public class ClientConfig {
     }
 
     public static void loadTexture(byte[] out) {
-        try {
-            NativeImage image;
+        Exceptions.wrapChecked(() -> {
+            InputStream stream;
             try {
-                image = NativeImage.read(new FileInputStream(ClientConstants.textureFile));
+                stream = new FileInputStream(ClientConstants.textureFile);
             } catch (FileNotFoundException e) {
                 URL resourceURL = ToasterSimulator.class.getResource("/texture.png");
                 if (resourceURL == null) {
@@ -85,16 +89,11 @@ public class ClientConfig {
                         }
                     }
                 }
-                image = NativeImage.read(resourceURL.openStream());
+                stream = resourceURL.openStream();
             }
-            try {
+            try (NativeImage image = NativeImage.read(stream)) {
                 ImageConversion.imageToBuffer(out, image);
-            } finally {
-                image.close();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        });
     }
 }

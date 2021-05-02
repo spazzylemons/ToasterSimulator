@@ -2,16 +2,16 @@ package me.spazzylemons.toastersimulator.network;
 
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+import me.spazzylemons.toastersimulator.Constants;
 import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.util.Compression;
-import me.spazzylemons.toastersimulator.client.util.ImageConversion;
+import me.spazzylemons.toastersimulator.util.Exceptions;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-import java.io.IOException;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -32,12 +32,10 @@ public class CProtogenModelUpdateMessage implements AutoRegistrableMessage {
     public CProtogenModelUpdateMessage(PacketBuffer buffer) {
         enabled = buffer.readBoolean();
         if (enabled) {
-            try {
-                texture = new byte[ImageConversion.IMAGE_BYTE_SIZE];
+            texture = new byte[Constants.TEXTURE_BYTE_SIZE];
+            Exceptions.wrapChecked(() -> {
                 Compression.decompress(new ByteBufInputStream(buffer), texture);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            });
         } else {
             texture = null;
         }
@@ -47,11 +45,9 @@ public class CProtogenModelUpdateMessage implements AutoRegistrableMessage {
     public void encode(PacketBuffer buffer) {
         buffer.writeBoolean(enabled);
         if (enabled) {
-            try {
+            Exceptions.wrapChecked(() -> {
                 Compression.compress(texture, new ByteBufOutputStream(buffer));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            });
         }
     }
 

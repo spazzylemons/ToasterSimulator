@@ -1,9 +1,10 @@
 package me.spazzylemons.toastersimulator.client.model;
 
-import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.client.model.geometry.Face;
 import me.spazzylemons.toastersimulator.client.model.geometry.QuadModel;
 import me.spazzylemons.toastersimulator.client.model.geometry.Vertex;
+import me.spazzylemons.toastersimulator.util.Exceptions;
+import me.spazzylemons.toastersimulator.util.Upvalue;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
@@ -70,14 +71,11 @@ public final class OBJLoader {
         }
     }
 
-    // TODO better fallback than empty model
     public static QuadModel loadOrEmpty(String resourceName) {
-        try {
-            return load(resourceName);
-        } catch (Exception e) {
-            e.printStackTrace();
-            ToasterSimulator.err("Could not load model " + resourceName + ", loading an empty model instead...");
-            return new QuadModel(new Face[0]);
-        }
+        Upvalue<QuadModel> result = new Upvalue<>();
+        Exceptions.wrapChecked(() -> {
+            result.set(load(resourceName));
+        });
+        return result.get();
     }
 }

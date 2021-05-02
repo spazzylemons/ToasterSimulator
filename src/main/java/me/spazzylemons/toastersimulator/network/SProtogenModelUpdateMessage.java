@@ -2,14 +2,14 @@ package me.spazzylemons.toastersimulator.network;
 
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+import me.spazzylemons.toastersimulator.Constants;
 import me.spazzylemons.toastersimulator.client.ClientData;
 import me.spazzylemons.toastersimulator.util.Compression;
-import me.spazzylemons.toastersimulator.client.util.ImageConversion;
+import me.spazzylemons.toastersimulator.util.Exceptions;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.io.IOException;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -33,12 +33,10 @@ public class SProtogenModelUpdateMessage implements AutoRegistrableMessage {
         playerId = buffer.readUUID();
         enabled = buffer.readBoolean();
         if (enabled) {
-            try {
-                texture = new byte[ImageConversion.IMAGE_BYTE_SIZE];
+            texture = new byte[Constants.TEXTURE_BYTE_SIZE];
+            Exceptions.wrapChecked(() -> {
                 Compression.decompress(new ByteBufInputStream(buffer), texture);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            });
         } else {
             texture = null;
         }
@@ -49,11 +47,9 @@ public class SProtogenModelUpdateMessage implements AutoRegistrableMessage {
         buffer.writeUUID(playerId);
         buffer.writeBoolean(enabled);
         if (enabled) {
-            try {
+            Exceptions.wrapChecked(() -> {
                 Compression.compress(texture, new ByteBufOutputStream(buffer));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            });
         }
     }
 
