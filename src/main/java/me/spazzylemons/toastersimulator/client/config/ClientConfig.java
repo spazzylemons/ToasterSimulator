@@ -3,7 +3,7 @@ package me.spazzylemons.toastersimulator.client.config;
 import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.client.ClientConstants;
 import me.spazzylemons.toastersimulator.network.CProtogenModelUpdateMessage;
-import me.spazzylemons.toastersimulator.network.ImageTransfer;
+import me.spazzylemons.toastersimulator.client.util.ImageConversion;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,7 +22,7 @@ import java.nio.channels.ReadableByteChannel;
 @OnlyIn(Dist.CLIENT)
 public class ClientConfig {
     private final ForgeConfigSpec.BooleanValue enabled;
-    private byte[] texture;
+    private final byte[] texture = new byte[ImageConversion.IMAGE_BYTE_SIZE];
     private NativeImage localImage;
 
     public ClientConfig(ForgeConfigSpec.Builder builder) {
@@ -37,13 +37,15 @@ public class ClientConfig {
     }
 
     public void reloadTexture() {
-        texture = loadTexture();
-        NativeImage newImage = ImageTransfer.bufferToImage(texture);
+        loadTexture(texture);
+        NativeImage newImage = ImageConversion.bufferToImage(64, 64, texture);
         try {
             if (localImage != null) localImage.close();
-        } finally {
-            localImage = newImage;
+        } catch (Exception e) {
+            newImage.close();
+            throw e;
         }
+        localImage = newImage;
         DynamicTexture texture = new DynamicTexture(localImage);
         ClientConstants.mc.getTextureManager().register(ClientConstants.localTextureResource, texture);
         sendToServer();
@@ -64,7 +66,7 @@ public class ClientConfig {
         }
     }
 
-    public static byte[] loadTexture() {
+    public static void loadTexture(byte[] out) {
         try {
             NativeImage image;
             try {
@@ -86,7 +88,7 @@ public class ClientConfig {
                 image = NativeImage.read(resourceURL.openStream());
             }
             try {
-                return ImageTransfer.imageToBuffer(image);
+                ImageConversion.imageToBuffer(out, image);
             } finally {
                 image.close();
             }

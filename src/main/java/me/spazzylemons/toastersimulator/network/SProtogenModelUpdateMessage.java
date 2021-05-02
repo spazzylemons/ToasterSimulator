@@ -1,6 +1,10 @@
 package me.spazzylemons.toastersimulator.network;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import me.spazzylemons.toastersimulator.client.ClientData;
+import me.spazzylemons.toastersimulator.util.Compression;
+import me.spazzylemons.toastersimulator.client.util.ImageConversion;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -30,8 +34,8 @@ public class SProtogenModelUpdateMessage implements AutoRegistrableMessage {
         enabled = buffer.readBoolean();
         if (enabled) {
             try {
-                texture = new byte[ImageTransfer.IMAGE_BYTE_SIZE];
-                ImageTransfer.readCompressed(texture, buffer);
+                texture = new byte[ImageConversion.IMAGE_BYTE_SIZE];
+                Compression.decompress(new ByteBufInputStream(buffer), texture);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -46,7 +50,7 @@ public class SProtogenModelUpdateMessage implements AutoRegistrableMessage {
         buffer.writeBoolean(enabled);
         if (enabled) {
             try {
-                ImageTransfer.writeCompressed(texture, buffer);
+                Compression.compress(texture, new ByteBufOutputStream(buffer));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

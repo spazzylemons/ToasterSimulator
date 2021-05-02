@@ -8,7 +8,7 @@ import me.spazzylemons.toastersimulator.client.event.LoggedOutEventHandler;
 import me.spazzylemons.toastersimulator.client.event.RenderHandEventHandler;
 import me.spazzylemons.toastersimulator.client.event.RenderPlayerEventHandler;
 import me.spazzylemons.toastersimulator.client.render.ProtogenPlayerRenderer;
-import me.spazzylemons.toastersimulator.network.ImageTransfer;
+import me.spazzylemons.toastersimulator.client.util.ImageConversion;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
@@ -68,14 +68,13 @@ public final class ClientData {
     }
 
     public static void addProtogen(UUID playerId, byte[] buffer) {
-        boolean failure = true;
-        NativeImage image = ImageTransfer.bufferToImage(buffer);
+        NativeImage image = ImageConversion.bufferToImage(64, 64, buffer);
         try {
             registerTexture(image, playerId);
             protogens.add(playerId);
-            failure = false;
-        } finally {
-            if (failure) image.close();
+        } catch (Exception e) {
+            image.close();
+            throw e;
         }
     }
 
