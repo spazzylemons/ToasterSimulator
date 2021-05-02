@@ -40,6 +40,9 @@ public class ProtogenPlayerModel<T extends LivingEntity> extends PlayerModel<T> 
         }
         // create custom model renderer, add to inner renderer
         inner.addChild(new QuadModelRenderer(this, quadModel));
+        // put empty cube info the parts, because some parts of Minecraft expect all models to have at least one cube
+        inner.addBox(0, 0, 0, 0, 0, 0);
+        outer.addBox(0, 0, 0, 0, 0, 0);
     }
 
     // temporary?

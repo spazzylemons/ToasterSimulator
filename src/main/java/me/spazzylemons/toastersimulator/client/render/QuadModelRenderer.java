@@ -9,6 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
+import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class QuadModelRenderer extends ModelRenderer {
@@ -17,6 +18,9 @@ public class QuadModelRenderer extends ModelRenderer {
     public QuadModelRenderer(Model model, QuadModel quadModel) {
         super(model);
         this.quadModel = quadModel;
+
+        // give this at least one box
+        addBox(0, 0, 0, 0, 0, 0);
     }
 
     @Override
