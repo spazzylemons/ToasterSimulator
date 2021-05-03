@@ -6,5 +6,8 @@
   "refmap": "toastersimulator.refmap.json",
   "client": [
     "client.SomeMixin"
+  ],
+  "mixins": [
+    "client.ILivingRendererModelShadowMixin"
   ]
 }

@@ -44,7 +44,7 @@ public final class ClientData {
         MinecraftForge.EVENT_BUS.register(LoggedInEventHandler.class);
         MinecraftForge.EVENT_BUS.register(LoggedOutEventHandler.class);
         MinecraftForge.EVENT_BUS.register(RenderHandEventHandler.class);
-        MinecraftForge.EVENT_BUS.register(RenderPlayerEventHandler.class);
+        // MinecraftForge.EVENT_BUS.register(RenderPlayerEventHandler.class);
 
         // TODO is there a better way to do this?
         Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
