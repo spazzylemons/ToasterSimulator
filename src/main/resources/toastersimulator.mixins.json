@@ -1,0 +1,10 @@
+{
+  "minVersion": "0.8.2",
+  "required": true,
+  "compatibilityLevel": "JAVA_8",
+  "package": "me.spazzylemons.toastersimulator.mixin",
+  "refmap": "toastersimulator.refmap.json",
+  "client": [
+    "client.SomeMixin"
+  ]
+}
