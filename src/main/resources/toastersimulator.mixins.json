@@ -5,9 +5,14 @@
   "package": "me.spazzylemons.toastersimulator.mixin",
   "refmap": "toastersimulator.refmap.json",
   "client": [
+    "client.EntityRendererMixin",
+    "client.FirstPersonRendererMixin",
     "client.ModelRendererMixin",
     "client.PlayerModelMixin",
     "client.PlayerRendererMixin",
     "client.AbstractClientPlayerEntityMixin"
-  ]
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

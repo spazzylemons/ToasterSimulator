@@ -84,6 +84,7 @@ public final class ClientData {
     }
 
     public static boolean isPlayerAProtogen(UUID playerId) {
+        if (playerId == null) return false;
         if (modSupportedByServer) {
             return protogens.contains(playerId);
         } else {
