@@ -25,6 +25,6 @@ public class PlayerRendererMixin {
             int light,
             CallbackInfo ci
     ) {
-        ClientData.currentlyRenderingPlayer = player.getUUID();
+        ClientData.setCurrentlyRenderingPlayerId(player.getUUID());
     }
 }

@@ -38,8 +38,8 @@ public abstract class ModelRendererMixin {
             float a,
             CallbackInfo ci
     ) {
-        if (visible && ClientData.isPlayerAProtogen(ClientData.currentlyRenderingPlayer)) {
-            QuadModel model = ClientData.modelRenderers.get(ModelRenderer.class.cast(this));
+        if (visible && ClientData.isPlayerAProtogen(ClientData.getCurrentlyRenderingPlayerId())) {
+            QuadModel model = ClientData.getModelRenderers().get(ModelRenderer.class.cast(this));
             if (model != null) {
                 matrices.pushPose();
                 try {

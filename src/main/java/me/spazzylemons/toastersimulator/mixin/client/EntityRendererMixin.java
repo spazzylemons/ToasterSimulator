@@ -16,7 +16,7 @@ public class EntityRendererMixin {
     @Inject(at = @At("HEAD"), method = "render")
     public void render(CallbackInfo ci) {
         if (!getClass().isAssignableFrom(PlayerRenderer.class)) {
-            ClientData.currentlyRenderingPlayer = null;
+            ClientData.setCurrentlyRenderingPlayerId(null);
         }
     }
 }

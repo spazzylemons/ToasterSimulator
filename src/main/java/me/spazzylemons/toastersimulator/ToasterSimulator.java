@@ -50,7 +50,7 @@ public class ToasterSimulator {
         addMessage(i, SProtogenModelUpdateMessage.class);
         addMessage(i, SProtogenSupportedMessage.class);
 
-        log("Beep!");
+        log(Constants.MOD_NAME + "has started successfully :3");
     }
 
     private static <T extends AutoRegistrableMessage> void addMessage(int[] i, Class<T> clazz) {

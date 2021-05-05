@@ -2,6 +2,7 @@ package me.spazzylemons.toastersimulator.mixin.client;
 
 import me.spazzylemons.toastersimulator.client.ClientData;
 import me.spazzylemons.toastersimulator.client.model.OBJLoader;
+import me.spazzylemons.toastersimulator.client.model.geometry.QuadModel;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -13,6 +14,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.WeakHashMap;
 
 @OnlyIn(Dist.CLIENT)
 @Mixin(PlayerModel.class)
@@ -30,17 +33,18 @@ public class PlayerModelMixin {
     @Inject(at = @At("RETURN"), method = "<init>")
     public void constructor(CallbackInfo ci) {
         BipedModel<?> biped = BipedModel.class.cast(this);
-        ClientData.modelRenderers.put(biped.head, OBJLoader.headModel);
-        ClientData.modelRenderers.put(biped.leftArm, OBJLoader.leftArmModel);
-        ClientData.modelRenderers.put(biped.rightArm, OBJLoader.rightArmModel);
-        ClientData.modelRenderers.put(biped.body, OBJLoader.bodyModel);
-        ClientData.modelRenderers.put(biped.leftLeg, OBJLoader.leftLegModel);
-        ClientData.modelRenderers.put(biped.rightLeg, OBJLoader.rightLegModel);
-        ClientData.modelRenderers.put(biped.hat, OBJLoader.emptyModel);
-        ClientData.modelRenderers.put(leftSleeve, OBJLoader.emptyModel);
-        ClientData.modelRenderers.put(rightSleeve, OBJLoader.emptyModel);
-        ClientData.modelRenderers.put(jacket, OBJLoader.emptyModel);
-        ClientData.modelRenderers.put(leftPants, OBJLoader.emptyModel);
-        ClientData.modelRenderers.put(rightPants, OBJLoader.emptyModel);
+        WeakHashMap<ModelRenderer, QuadModel> modelRenderers = ClientData.getModelRenderers();
+        modelRenderers.put(biped.head, OBJLoader.headModel);
+        modelRenderers.put(biped.leftArm, OBJLoader.leftArmModel);
+        modelRenderers.put(biped.rightArm, OBJLoader.rightArmModel);
+        modelRenderers.put(biped.body, OBJLoader.bodyModel);
+        modelRenderers.put(biped.leftLeg, OBJLoader.leftLegModel);
+        modelRenderers.put(biped.rightLeg, OBJLoader.rightLegModel);
+        modelRenderers.put(biped.hat, OBJLoader.emptyModel);
+        modelRenderers.put(leftSleeve, OBJLoader.emptyModel);
+        modelRenderers.put(rightSleeve, OBJLoader.emptyModel);
+        modelRenderers.put(jacket, OBJLoader.emptyModel);
+        modelRenderers.put(leftPants, OBJLoader.emptyModel);
+        modelRenderers.put(rightPants, OBJLoader.emptyModel);
     }
 }

@@ -18,7 +18,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(FirstPersonRenderer.class)
 public class FirstPersonRendererMixin {
     @Inject(at = @At("HEAD"), method = "renderArmWithItem")
-    public void renderArmWithItem(AbstractClientPlayerEntity player, float p_228405_2_, float p_228405_3_, Hand p_228405_4_, float p_228405_5_, ItemStack p_228405_6_, float p_228405_7_, MatrixStack p_228405_8_, IRenderTypeBuffer p_228405_9_, int p_228405_10_, CallbackInfo ci) {
-        ClientData.currentlyRenderingPlayer = player.getUUID();
+    public void renderArmWithItem(
+            AbstractClientPlayerEntity player,
+            float partialTicks,
+            float interpPitch,
+            Hand hand,
+            float swingProgress,
+            ItemStack item,
+            float equipProgress,
+            MatrixStack matrices,
+            IRenderTypeBuffer buffers,
+            int light,
+            CallbackInfo ci
+    ) {
+        ClientData.setCurrentlyRenderingPlayerId(player.getUUID());
     }
 }

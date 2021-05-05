@@ -1,7 +1,6 @@
 package me.spazzylemons.toastersimulator.client;
 
 import me.spazzylemons.toastersimulator.Constants;
-import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.client.config.ClientConfig;
 import me.spazzylemons.toastersimulator.client.model.geometry.QuadModel;
 import me.spazzylemons.toastersimulator.client.util.ImageConversion;
@@ -32,8 +31,8 @@ public final class ClientData {
     private static final Set<UUID> protogens = new HashSet<>();
     private static boolean modSupportedByServer;
 
-    public static final WeakHashMap<ModelRenderer, QuadModel> modelRenderers = new WeakHashMap<>();
-    public static UUID currentlyRenderingPlayer;
+    private static final WeakHashMap<ModelRenderer, QuadModel> modelRenderers = new WeakHashMap<>();
+    private static UUID currentlyRenderingPlayerId;
 
     private ClientData() {}
 
@@ -53,13 +52,11 @@ public final class ClientData {
     }
 
     public static void addProtogen(UUID playerId, byte[] buffer) {
-        ToasterSimulator.log("ADDING A PROTOGEN: ID = " + playerId);
         NativeImage image = ImageConversion.bufferToImage(Constants.TEXTURE_WIDTH, Constants.TEXTURE_HEIGHT, buffer);
         Exceptions.wrapChecked(() -> Exceptions.closeOnFailure(image, () -> {
             registerTexture(image, playerId);
             protogens.add(playerId);
         }));
-        ToasterSimulator.log("ADDED A PROTOGEN: ID = " + playerId);
     }
 
     public static void removeProtogen(UUID playerId) {
@@ -77,6 +74,18 @@ public final class ClientData {
 
     public static void setModSupportedByServer(boolean modSupportedByServer) {
         ClientData.modSupportedByServer = modSupportedByServer;
+    }
+
+    public static WeakHashMap<ModelRenderer, QuadModel> getModelRenderers() {
+        return modelRenderers;
+    }
+
+    public static UUID getCurrentlyRenderingPlayerId() {
+        return currentlyRenderingPlayerId;
+    }
+
+    public static void setCurrentlyRenderingPlayerId(UUID playerId) {
+        currentlyRenderingPlayerId = playerId;
     }
 
     public static boolean isPlayerAProtogen(UUID playerId) {
