@@ -22,7 +22,6 @@ public class InitGuiEventHandler {
     private static final Field buttonsField =
             ObfuscationReflectionHelper.findField(Screen.class, "field_230710_m_");
 
-    @SuppressWarnings("unchecked cast") // TODO remove
     @SubscribeEvent
     public static void onInitGui(GuiScreenEvent.InitGuiEvent event) {
         Screen screen = event.getGui();
@@ -33,10 +32,10 @@ public class InitGuiEventHandler {
             // find lowest button and situate our button below it, hoping no mod puts a button at the very bottom
             // if this fails we'll default to putting it below where the done button should be
             // this check is useful for dynamic compatibility with other mods adding buttons here, e.g. optifine
-            List<Widget> buttons = (List<Widget>) buttonsField.get(screen);
-            Widget lowest = buttons
+            List<?> buttons = (List<?>) buttonsField.get(screen);
+            Widget lowest = (Widget) buttons
                     .stream() // stream as to not mutate the original list
-                    .sorted(Comparator.comparingInt(b -> b.y + b.getHeight())) // sort by bottom edge
+                    .sorted(Comparator.comparingInt(b -> ((Widget) b).y + ((Widget) b).getHeight())) // sort by bottom edge
                     .reduce((a, b) -> b) // take last
                     .orElse(null); // convert optional none to null
             if (lowest != null) {

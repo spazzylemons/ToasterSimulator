@@ -1,16 +1,16 @@
 package me.spazzylemons.toastersimulator.client;
 
 import me.spazzylemons.toastersimulator.Constants;
+import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.client.config.ClientConfig;
 import me.spazzylemons.toastersimulator.client.event.InitGuiEventHandler;
 import me.spazzylemons.toastersimulator.client.event.LoggedInEventHandler;
 import me.spazzylemons.toastersimulator.client.event.LoggedOutEventHandler;
-import me.spazzylemons.toastersimulator.client.event.RenderHandEventHandler;
-import me.spazzylemons.toastersimulator.client.event.RenderPlayerEventHandler;
-import me.spazzylemons.toastersimulator.client.render.ProtogenPlayerRenderer;
+import me.spazzylemons.toastersimulator.client.model.geometry.QuadModel;
 import me.spazzylemons.toastersimulator.client.util.ImageConversion;
 import me.spazzylemons.toastersimulator.util.Exceptions;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -25,17 +25,19 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 @OnlyIn(Dist.CLIENT)
 public final class ClientData {
     private static ClientConfig config;
-    private static @Nullable ProtogenPlayerRenderer renderer;
     private static final Set<UUID> protogens = new HashSet<>();
     private static boolean modSupportedByServer;
+
+    public static final WeakHashMap<ModelRenderer, QuadModel> modelRenderers = new WeakHashMap<>();
+    public static UUID currentlyRenderingPlayer;
 
     private ClientData() {}
 
@@ -43,8 +45,6 @@ public final class ClientData {
         MinecraftForge.EVENT_BUS.register(InitGuiEventHandler.class);
         MinecraftForge.EVENT_BUS.register(LoggedInEventHandler.class);
         MinecraftForge.EVENT_BUS.register(LoggedOutEventHandler.class);
-        MinecraftForge.EVENT_BUS.register(RenderHandEventHandler.class);
-        // MinecraftForge.EVENT_BUS.register(RenderPlayerEventHandler.class);
 
         // TODO is there a better way to do this?
         Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
@@ -60,20 +60,14 @@ public final class ClientData {
         return config;
     }
 
-    public static @Nonnull ProtogenPlayerRenderer getRenderer() {
-        if (renderer == null) {
-            // lazy-load this, because when the mod's loaded the EntityRenderManager won't be
-            renderer = new ProtogenPlayerRenderer(ClientConstants.mc.getEntityRenderDispatcher());
-        }
-        return renderer;
-    }
-
     public static void addProtogen(UUID playerId, byte[] buffer) {
+        ToasterSimulator.log("ADDING A PROTOGEN: ID = " + playerId);
         NativeImage image = ImageConversion.bufferToImage(Constants.TEXTURE_WIDTH, Constants.TEXTURE_HEIGHT, buffer);
         Exceptions.wrapChecked(() -> Exceptions.closeOnFailure(image, () -> {
             registerTexture(image, playerId);
             protogens.add(playerId);
         }));
+        ToasterSimulator.log("ADDED A PROTOGEN: ID = " + playerId);
     }
 
     public static void removeProtogen(UUID playerId) {
@@ -93,21 +87,15 @@ public final class ClientData {
         ClientData.modSupportedByServer = modSupportedByServer;
     }
 
-    public static boolean areWeAProtogen() {
-        ClientPlayerEntity player = ClientConstants.mc.player;
-        if (player == null) return false;
-        return isPlayerAProtogen(player.getUUID());
-    }
-
     public static boolean isPlayerAProtogen(UUID playerId) {
         if (modSupportedByServer) {
             return protogens.contains(playerId);
         } else {
-            return isPlayerIdClientPlayerId(playerId);
+            return isPlayerIdClientPlayerId(playerId) && config.isEnabled();
         }
     }
 
-    private static boolean isPlayerIdClientPlayerId(UUID playerId) {
+    public static boolean isPlayerIdClientPlayerId(UUID playerId) {
         ClientPlayerEntity player = ClientConstants.mc.player;
         return player != null && player.getUUID() == playerId;
     }
@@ -130,6 +118,10 @@ public final class ClientData {
     }
 
     public static ResourceLocation getTextureLocation(UUID playerId) {
-        return new ResourceLocation(Constants.MOD_ID, "texture-" + playerId.toString());
+        if (isModSupportedByServer()) {
+            return new ResourceLocation(Constants.MOD_ID, "texture-" + playerId.toString());
+        } else {
+            return ClientConstants.localTextureResource;
+        }
     }
 }

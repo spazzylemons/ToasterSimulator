@@ -78,4 +78,12 @@ public final class OBJLoader {
         });
         return result.get();
     }
+
+    public static final QuadModel emptyModel = new QuadModel(new Face[0]);
+    public static final QuadModel headModel = OBJLoader.loadOrEmpty("head.obj");
+    public static final QuadModel leftArmModel = OBJLoader.loadOrEmpty("left_arm.obj");
+    public static final QuadModel rightArmModel = OBJLoader.loadOrEmpty("right_arm.obj");
+    public static final QuadModel bodyModel = OBJLoader.loadOrEmpty("body.obj");
+    public static final QuadModel leftLegModel = OBJLoader.loadOrEmpty("left_leg.obj");
+    public static final QuadModel rightLegModel = OBJLoader.loadOrEmpty("right_leg.obj");
 }

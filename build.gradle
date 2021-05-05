@@ -84,7 +84,7 @@ sourceSets.main.resources {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.13'
     implementation 'org.spongepowered:mixin:0.8.2'
-	annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 }
 
 jar.finalizedBy('reobfJar')
