@@ -13,6 +13,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ConfigFileTypeHandler;
 import net.minecraftforge.fml.config.ModConfig;
@@ -91,7 +92,9 @@ public class ClientConfig {
     public static ClientConfig create() {
         Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
 
-        ModContainer container = ModLoadingContext.get().getActiveContainer();
+        ModContainer container = ModList.get().getModContainerById(Constants.MOD_ID).orElse(null);
+        assert container != null; // our own mod should be loaded, or we've got bigger problems
+
         ForgeConfigSpec spec = specPair.getRight();
         ModConfig modConfig = new ModConfig(ModConfig.Type.CLIENT, spec, container);
         container.addConfig(modConfig);
@@ -150,7 +153,6 @@ public class ClientConfig {
             config.withConfigOpen(() -> {
                 value.set(t);
                 value.save();
-                ToasterSimulator.log("VALUE SAVED!");
             });
             cache = t;
         }
