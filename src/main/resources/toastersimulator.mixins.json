@@ -5,12 +5,13 @@
   "package": "me.spazzylemons.toastersimulator.mixin",
   "refmap": "toastersimulator.refmap.json",
   "client": [
+    "client.AbstractClientPlayerEntityMixin",
+    "client.CustomizeSkinScreenMixin",
     "client.EntityRendererMixin",
     "client.FirstPersonRendererMixin",
     "client.ModelRendererMixin",
     "client.PlayerModelMixin",
-    "client.PlayerRendererMixin",
-    "client.AbstractClientPlayerEntityMixin"
+    "client.PlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

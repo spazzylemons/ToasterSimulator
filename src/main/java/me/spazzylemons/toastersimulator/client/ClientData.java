@@ -3,7 +3,6 @@ package me.spazzylemons.toastersimulator.client;
 import me.spazzylemons.toastersimulator.Constants;
 import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.client.config.ClientConfig;
-import me.spazzylemons.toastersimulator.client.event.InitGuiEventHandler;
 import me.spazzylemons.toastersimulator.client.event.LoggedInEventHandler;
 import me.spazzylemons.toastersimulator.client.event.LoggedOutEventHandler;
 import me.spazzylemons.toastersimulator.client.model.geometry.QuadModel;
