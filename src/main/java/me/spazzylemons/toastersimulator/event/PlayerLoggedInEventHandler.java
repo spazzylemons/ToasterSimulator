@@ -1,16 +1,19 @@
 package me.spazzylemons.toastersimulator.event;
 
+import me.spazzylemons.toastersimulator.Constants;
 import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.network.SProtogenModelUpdateMessage;
 import me.spazzylemons.toastersimulator.network.SProtogenSupportedMessage;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.Map;
 import java.util.UUID;
 
+@Mod.EventBusSubscriber(modid = Constants.MOD_ID)
 public class PlayerLoggedInEventHandler {
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {

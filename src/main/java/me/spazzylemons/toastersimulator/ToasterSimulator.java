@@ -41,9 +41,6 @@ public class ToasterSimulator {
     private void setup(FMLCommonSetupEvent event) {
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientData::setup);
 
-        MinecraftForge.EVENT_BUS.register(PlayerLoggedInEventHandler.class);
-        MinecraftForge.EVENT_BUS.register(ServerStoppedEventHandler.class);
-
         channel = NetworkRegistry.newSimpleChannel(
                 Constants.channelId,
                 () -> Constants.PROTOCOL_VERSION,

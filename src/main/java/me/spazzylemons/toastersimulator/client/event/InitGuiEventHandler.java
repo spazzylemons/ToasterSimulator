@@ -11,6 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
@@ -18,6 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT)
 public class InitGuiEventHandler {
     private static final Field buttonsField =
             ObfuscationReflectionHelper.findField(Screen.class, "field_230710_m_");

@@ -42,10 +42,6 @@ public final class ClientData {
     private ClientData() {}
 
     public static void setup() {
-        MinecraftForge.EVENT_BUS.register(InitGuiEventHandler.class);
-        MinecraftForge.EVENT_BUS.register(LoggedInEventHandler.class);
-        MinecraftForge.EVENT_BUS.register(LoggedOutEventHandler.class);
-
         // TODO is there a better way to do this?
         Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
         config = specPair.getLeft();
