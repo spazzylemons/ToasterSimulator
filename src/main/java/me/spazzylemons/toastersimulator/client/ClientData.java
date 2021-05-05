@@ -13,11 +13,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.loading.FMLPaths;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -27,7 +22,7 @@ import java.util.WeakHashMap;
 
 @OnlyIn(Dist.CLIENT)
 public final class ClientData {
-    private static ClientConfig config;
+    private static final ClientConfig config = ClientConfig.create();
     private static final Set<UUID> protogens = new HashSet<>();
     private static boolean modSupportedByServer;
 
@@ -36,16 +31,7 @@ public final class ClientData {
 
     private ClientData() {}
 
-    public static void setup() {
-        // TODO is there a better way to do this?
-        Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
-        config = specPair.getLeft();
-        ForgeConfigSpec spec = specPair.getRight();
-        ModLoadingContext ctx = ModLoadingContext.get();
-        ModConfig modConfig = new ModConfig(ModConfig.Type.CLIENT, spec, ctx.getActiveContainer());
-        spec.setConfig(modConfig.getHandler().reader(FMLPaths.CONFIGDIR.get()).apply(modConfig));
-        ctx.getActiveContainer().addConfig(modConfig);
-    }
+    public static void setup() {}
 
     public static @Nonnull ClientConfig getConfig() {
         return config;

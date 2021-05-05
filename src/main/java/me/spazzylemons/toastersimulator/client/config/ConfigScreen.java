@@ -29,7 +29,6 @@ public class ConfigScreen extends Screen {
         addButton(i, createIsEnabledText(), button -> {
             ClientConfig config = ClientData.getConfig();
             config.setEnabled(!config.isEnabled());
-            config.save();
             button.setMessage(createIsEnabledText());
         });
 

@@ -1,5 +1,6 @@
 package me.spazzylemons.toastersimulator.client.config;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import me.spazzylemons.toastersimulator.Constants;
 import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.client.ClientConstants;
@@ -11,6 +12,12 @@ import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ConfigFileTypeHandler;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.loading.FMLPaths;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.io.FileInputStream;
@@ -25,34 +32,20 @@ import java.nio.channels.ReadableByteChannel;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientConfig {
-    private final ForgeConfigSpec.BooleanValue enabled;
+    private final CachedConfigValue<Boolean> enabled;
     private final byte[] texture = new byte[Constants.TEXTURE_BYTE_SIZE];
     private @Nonnull NativeImage localImage;
+    private ModConfig modConfig;
 
-    public ClientConfig(ForgeConfigSpec.Builder builder) {
-        enabled = builder
-                .comment("If true, the protogen model will be displayed instead of the vanilla model.")
-                .define("enabled", true);
+    private ClientConfig(ForgeConfigSpec.Builder builder) {
+        enabled = new CachedConfigValue<>(
+                this,
+                builder
+                    .comment("If true, the protogen model will be displayed instead of the vanilla model.")
+                    .define("enabled", true)
+        );
         localImage = new NativeImage(Constants.TEXTURE_WIDTH, Constants.TEXTURE_HEIGHT, true);
         reloadTexture();
-    }
-
-    public void save() {
-        enabled.save();
-    }
-
-    public void reloadTexture() {
-        loadTexture(texture);
-        NativeImage newImage = ImageConversion.bufferToImage(
-                Constants.TEXTURE_WIDTH,
-                Constants.TEXTURE_HEIGHT,
-                texture
-        );
-        Exceptions.wrapChecked(() -> Exceptions.closeOnFailure(newImage, localImage::close));
-        localImage = newImage;
-        DynamicTexture texture = new DynamicTexture(localImage);
-        ClientConstants.mc.getTextureManager().register(ClientConstants.localTextureResource, texture);
-        sendToServer();
     }
 
     public boolean isEnabled() {
@@ -70,7 +63,46 @@ public class ClientConfig {
         }
     }
 
-    public static void loadTexture(byte[] out) {
+    public void reloadTexture() {
+        loadTexture(texture);
+        NativeImage newImage = ImageConversion.bufferToImage(
+                Constants.TEXTURE_WIDTH,
+                Constants.TEXTURE_HEIGHT,
+                texture
+        );
+        Exceptions.wrapChecked(() -> Exceptions.closeOnFailure(newImage, localImage::close));
+        localImage = newImage;
+        DynamicTexture texture = new DynamicTexture(localImage);
+        ClientConstants.mc.getTextureManager().register(ClientConstants.localTextureResource, texture);
+        sendToServer();
+    }
+
+    private void withConfigOpen(Runnable f) {
+        ForgeConfigSpec spec = modConfig.getSpec();
+        ConfigFileTypeHandler handler = modConfig.getHandler();
+        try (CommentedFileConfig configData = handler.reader(FMLPaths.CONFIGDIR.get()).apply(modConfig)) {
+            spec.setConfig(configData);
+            f.run();
+        } finally {
+            spec.setConfig(null);
+        }
+    }
+
+    public static ClientConfig create() {
+        Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
+
+        ModContainer container = ModLoadingContext.get().getActiveContainer();
+        ForgeConfigSpec spec = specPair.getRight();
+        ModConfig modConfig = new ModConfig(ModConfig.Type.CLIENT, spec, container);
+        container.addConfig(modConfig);
+
+        ClientConfig config = specPair.getLeft();
+        config.modConfig = modConfig;
+
+        return config;
+    }
+
+    private static void loadTexture(byte[] out) {
         Exceptions.wrapChecked(() -> {
             InputStream stream;
             try {
@@ -95,5 +127,32 @@ public class ClientConfig {
                 ImageConversion.imageToBuffer(out, image);
             }
         });
+    }
+
+    private static class CachedConfigValue<T> {
+        private final ClientConfig config;
+        private final ForgeConfigSpec.ConfigValue<T> value;
+        private T cache = null;
+
+        private CachedConfigValue(ClientConfig config, ForgeConfigSpec.ConfigValue<T> value) {
+            this.config = config;
+            this.value = value;
+        }
+
+        private T get() {
+            if (cache == null) {
+                config.withConfigOpen(() -> cache = value.get());
+            }
+            return cache;
+        }
+
+        private void set(T t) {
+            config.withConfigOpen(() -> {
+                value.set(t);
+                value.save();
+                ToasterSimulator.log("VALUE SAVED!");
+            });
+            cache = t;
+        }
     }
 }
