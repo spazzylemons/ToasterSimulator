@@ -14,9 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Mod(Constants.MOD_ID)
+@Mod(ToasterSimulator.ID)
 public class ToasterSimulator {
-    private static final Logger LOGGER = LogManager.getLogger(Constants.MOD_NAME);
+    public static final String ID = "toastersimulator";
+    public static final String NAME = "Toaster Simulator";
+    public static final Logger LOGGER = LogManager.getLogger(NAME);
 
     private static final Map<UUID, byte[]> protogens = new HashMap<>();
 
@@ -31,15 +33,7 @@ public class ToasterSimulator {
 
         net = new ToasterNet();
 
-        log(Constants.MOD_NAME + " has started successfully :3");
-    }
-
-    public static void log(String message) {
-        LOGGER.info(message);
-    }
-
-    public static void err(String message) {
-        LOGGER.error(message);
+        LOGGER.info(NAME + " has started successfully :3");
     }
 
     public static Map<UUID, byte[]> getProtogens() {

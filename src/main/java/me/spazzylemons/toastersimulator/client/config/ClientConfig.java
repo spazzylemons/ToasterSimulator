@@ -1,25 +1,23 @@
 package me.spazzylemons.toastersimulator.client.config;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import me.spazzylemons.toastersimulator.Constants;
+import me.spazzylemons.toastersimulator.TextureConstants;
 import me.spazzylemons.toastersimulator.ToasterSimulator;
-import me.spazzylemons.toastersimulator.client.ClientConstants;
+import me.spazzylemons.toastersimulator.client.ClientData;
+import me.spazzylemons.toastersimulator.client.ClientTextureManager;
 import me.spazzylemons.toastersimulator.client.util.ImageConversion;
 import me.spazzylemons.toastersimulator.network.CModelUpdateMessageType;
 import me.spazzylemons.toastersimulator.util.Exceptions;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.config.ConfigFileTypeHandler;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -33,9 +31,11 @@ import java.nio.channels.ReadableByteChannel;
 @OnlyIn(Dist.CLIENT)
 public class ClientConfig {
     private final CachedConfigValue<Boolean> enabled;
-    private final byte[] texture = new byte[Constants.TEXTURE_BYTE_SIZE];
-    private @Nonnull NativeImage localImage;
+    private final byte[] texture = new byte[TextureConstants.BYTE_SIZE];
     private ModConfig modConfig;
+
+    private static final File TEXTURE_FILE =
+            FMLPaths.CONFIGDIR.get().resolve(ToasterSimulator.ID + "-texture.png").toFile();
 
     private ClientConfig(ForgeConfigSpec.Builder builder) {
         enabled = new CachedConfigValue<>(
@@ -44,7 +44,6 @@ public class ClientConfig {
                     .comment("If true, the protogen model will be displayed instead of the vanilla model.")
                     .define("enabled", true)
         );
-        localImage = new NativeImage(Constants.TEXTURE_WIDTH, Constants.TEXTURE_HEIGHT, true);
         reloadTexture();
     }
 
@@ -58,40 +57,21 @@ public class ClientConfig {
     }
 
     public void sendToServer() {
-        if (ClientConstants.mc.getConnection() != null) {
+        if (ClientData.MINECRAFT.getConnection() != null) {
             ToasterSimulator.getNet().sendToServer(new CModelUpdateMessageType.Message(isEnabled(), texture));
         }
     }
 
     public void reloadTexture() {
         loadTexture(texture);
-        NativeImage newImage = ImageConversion.bufferToImage(
-                Constants.TEXTURE_WIDTH,
-                Constants.TEXTURE_HEIGHT,
-                texture
-        );
-        Exceptions.wrapChecked(() -> Exceptions.closeOnFailure(newImage, localImage::close));
-        localImage = newImage;
-        DynamicTexture texture = new DynamicTexture(localImage);
-        ClientConstants.mc.getTextureManager().register(ClientConstants.localTextureResource, texture);
+        ClientTextureManager.setLocal(texture);
         sendToServer();
-    }
-
-    private void withConfigOpen(Runnable f) {
-        ForgeConfigSpec spec = modConfig.getSpec();
-        ConfigFileTypeHandler handler = modConfig.getHandler();
-        try (CommentedFileConfig configData = handler.reader(FMLPaths.CONFIGDIR.get()).apply(modConfig)) {
-            spec.setConfig(configData);
-            f.run();
-        } finally {
-            spec.setConfig(null);
-        }
     }
 
     public static ClientConfig create() {
         Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
 
-        ModContainer container = ModList.get().getModContainerById(Constants.MOD_ID).orElse(null);
+        ModContainer container = ModList.get().getModContainerById(ToasterSimulator.ID).orElse(null);
         assert container != null; // our own mod should be loaded, or we've got bigger problems
 
         ForgeConfigSpec spec = specPair.getRight();
@@ -108,13 +88,13 @@ public class ClientConfig {
         Exceptions.wrapChecked(() -> {
             InputStream stream;
             try {
-                stream = new FileInputStream(ClientConstants.textureFile);
+                stream = new FileInputStream(TEXTURE_FILE);
             } catch (FileNotFoundException e) {
                 URL resourceURL = ToasterSimulator.class.getResource("/texture.png");
                 if (resourceURL == null) {
                     throw new IOException("Cannot open resource");
                 }
-                try (FileChannel fileCh = new FileOutputStream(ClientConstants.textureFile).getChannel()) {
+                try (FileChannel fileCh = new FileOutputStream(TEXTURE_FILE).getChannel()) {
                     int size = resourceURL.openConnection().getContentLength();
                     int pos = 0;
                     try (ReadableByteChannel resourceCh = Channels.newChannel(resourceURL.openStream())) {
@@ -131,29 +111,7 @@ public class ClientConfig {
         });
     }
 
-    private static class CachedConfigValue<T> {
-        private final ClientConfig config;
-        private final ForgeConfigSpec.ConfigValue<T> value;
-        private T cache = null;
-
-        private CachedConfigValue(ClientConfig config, ForgeConfigSpec.ConfigValue<T> value) {
-            this.config = config;
-            this.value = value;
-        }
-
-        private T get() {
-            if (cache == null) {
-                config.withConfigOpen(() -> cache = value.get());
-            }
-            return cache;
-        }
-
-        private void set(T t) {
-            config.withConfigOpen(() -> {
-                value.set(t);
-                value.save();
-            });
-            cache = t;
-        }
+    public ModConfig getModConfig() {
+        return modConfig;
     }
 }

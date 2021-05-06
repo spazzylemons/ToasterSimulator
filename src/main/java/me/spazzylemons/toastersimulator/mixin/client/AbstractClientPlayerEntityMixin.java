@@ -1,6 +1,6 @@
 package me.spazzylemons.toastersimulator.mixin.client;
 
-import me.spazzylemons.toastersimulator.client.ClientData;
+import me.spazzylemons.toastersimulator.client.ClientTextureManager;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
@@ -20,8 +20,9 @@ public class AbstractClientPlayerEntityMixin {
     public void getSkinTextureLocation(CallbackInfoReturnable<ResourceLocation> cir) {
         LivingEntity entity = LivingEntity.class.cast(this);
         UUID playerId = entity.getUUID();
-        if (ClientData.isPlayerAProtogen(playerId)) {
-            cir.setReturnValue(ClientData.getTextureLocation(playerId));
+        ResourceLocation texture = ClientTextureManager.get(playerId);
+        if (texture != null) {
+            cir.setReturnValue(texture);
         }
     }
 }

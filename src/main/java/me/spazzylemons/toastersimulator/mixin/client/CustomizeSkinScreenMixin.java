@@ -1,6 +1,6 @@
 package me.spazzylemons.toastersimulator.mixin.client;
 
-import me.spazzylemons.toastersimulator.Constants;
+import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.client.config.ConfigScreen;
 import net.minecraft.client.gui.screen.CustomizeSkinScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -29,7 +29,7 @@ public class CustomizeSkinScreenMixin extends Screen {
                 this.height / 6 + 24 * (i >> 1),
                 200,
                 20,
-                new StringTextComponent(Constants.MOD_NAME + " options..."),
+                new StringTextComponent(ToasterSimulator.NAME + " options..."),
                 button -> getMinecraft().setScreen(new ConfigScreen(this))
         ));
     }

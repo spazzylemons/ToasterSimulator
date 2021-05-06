@@ -1,6 +1,5 @@
 package me.spazzylemons.toastersimulator.event;
 
-import me.spazzylemons.toastersimulator.Constants;
 import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.network.SHelloMessageType;
 import me.spazzylemons.toastersimulator.network.SModelUpdateMessageType;
@@ -13,7 +12,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.util.Map;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(modid = Constants.MOD_ID)
+@Mod.EventBusSubscriber(modid = ToasterSimulator.ID)
 public class PlayerLoggedInEventHandler {
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {

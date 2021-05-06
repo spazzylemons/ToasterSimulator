@@ -1,7 +1,7 @@
 package me.spazzylemons.toastersimulator.client.config;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.spazzylemons.toastersimulator.Constants;
+import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.client.ClientData;
 import net.minecraft.client.gui.DialogTexts;
 import net.minecraft.client.gui.screen.Screen;
@@ -18,7 +18,7 @@ public class ConfigScreen extends Screen {
     private final Screen parent;
 
     public ConfigScreen(Screen parent) {
-        super(new StringTextComponent(Constants.MOD_NAME + " configuration"));
+        super(new StringTextComponent(ToasterSimulator.NAME + " configuration"));
         this.parent = parent;
     }
 

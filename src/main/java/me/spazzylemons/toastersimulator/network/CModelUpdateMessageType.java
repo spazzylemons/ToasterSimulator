@@ -2,7 +2,7 @@ package me.spazzylemons.toastersimulator.network;
 
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
-import me.spazzylemons.toastersimulator.Constants;
+import me.spazzylemons.toastersimulator.TextureConstants;
 import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.util.Compression;
 import me.spazzylemons.toastersimulator.util.Exceptions;
@@ -34,7 +34,7 @@ public class CModelUpdateMessageType implements MessageType<CModelUpdateMessageT
         boolean enabled = buffer.readBoolean();
         byte[] texture;
         if (enabled) {
-            texture = new byte[Constants.TEXTURE_BYTE_SIZE];
+            texture = new byte[TextureConstants.BYTE_SIZE];
             Exceptions.wrapChecked(() -> {
                 Compression.decompress(new ByteBufInputStream(buffer), texture);
             });

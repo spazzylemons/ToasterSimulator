@@ -1,6 +1,6 @@
 package me.spazzylemons.toastersimulator.network;
 
-import me.spazzylemons.toastersimulator.client.ClientData;
+import me.spazzylemons.toastersimulator.client.ClientTextureManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -28,7 +28,7 @@ public class SHelloMessageType implements MessageType<SHelloMessageType.Message>
         ctx.get().enqueueWork(() -> {
             // Must be server-to-client
             if (ctx.get().getDirection() != NetworkDirection.PLAY_TO_CLIENT) return;
-            ClientData.setModSupportedByServer(true);
+            ClientTextureManager.setHelloReceived(true);
         });
         ctx.get().setPacketHandled(true);
     }

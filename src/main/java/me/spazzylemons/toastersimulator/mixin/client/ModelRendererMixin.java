@@ -3,6 +3,7 @@ package me.spazzylemons.toastersimulator.mixin.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.spazzylemons.toastersimulator.client.ClientData;
+import me.spazzylemons.toastersimulator.client.ClientTextureManager;
 import me.spazzylemons.toastersimulator.client.model.geometry.QuadModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,7 +39,7 @@ public abstract class ModelRendererMixin {
             float a,
             CallbackInfo ci
     ) {
-        if (visible && ClientData.isPlayerAProtogen(ClientData.getCurrentlyRenderingPlayerId())) {
+        if (visible && ClientTextureManager.get(ClientData.getCurrentlyRenderingPlayerId()) != null) {
             QuadModel model = ClientData.getModelRenderers().get(ModelRenderer.class.cast(this));
             if (model != null) {
                 matrices.pushPose();

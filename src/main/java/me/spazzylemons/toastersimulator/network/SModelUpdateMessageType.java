@@ -2,8 +2,8 @@ package me.spazzylemons.toastersimulator.network;
 
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
-import me.spazzylemons.toastersimulator.Constants;
-import me.spazzylemons.toastersimulator.client.ClientData;
+import me.spazzylemons.toastersimulator.TextureConstants;
+import me.spazzylemons.toastersimulator.client.ClientTextureManager;
 import me.spazzylemons.toastersimulator.util.Compression;
 import me.spazzylemons.toastersimulator.util.Exceptions;
 import net.minecraft.network.PacketBuffer;
@@ -34,7 +34,7 @@ public class SModelUpdateMessageType implements MessageType<SModelUpdateMessageT
         boolean enabled = buffer.readBoolean();
         byte[] texture;
         if (enabled) {
-            texture = new byte[Constants.TEXTURE_BYTE_SIZE];
+            texture = new byte[TextureConstants.BYTE_SIZE];
             Exceptions.wrapChecked(() -> Compression.decompress(new ByteBufInputStream(buffer), texture));
         } else {
             texture = null;
@@ -48,9 +48,9 @@ public class SModelUpdateMessageType implements MessageType<SModelUpdateMessageT
             // Must be server-to-client
             if (ctx.get().getDirection() != NetworkDirection.PLAY_TO_CLIENT) return;
             if (message.enabled) {
-                ClientData.addProtogen(message.playerId, message.texture);
+                ClientTextureManager.add(message.playerId, message.texture);
             } else {
-                ClientData.removeProtogen(message.playerId);
+                ClientTextureManager.remove(message.playerId);
             }
         });
         ctx.get().setPacketHandled(true);
