@@ -15,22 +15,24 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class CProtogenModelUpdateMessage implements AutoRegistrableMessage {
-    private final boolean enabled;
-    private final byte[] texture;
+public class CModelUpdateMessageType implements MessageType<CModelUpdateMessageType.Message> {
+    @Override
+    public Class<Message> getMessageType() {
+        return Message.class;
+    }
 
-    public CProtogenModelUpdateMessage(boolean enabled, byte[] texture) {
-        this.enabled = enabled;
-        if (enabled) {
-            this.texture = texture;
-        } else {
-            this.texture = null;
+    @Override
+    public void encode(Message message, PacketBuffer buffer) {
+        buffer.writeBoolean(message.enabled);
+        if (message.enabled) {
+            Exceptions.wrapChecked(() -> Compression.compress(message.texture, new ByteBufOutputStream(buffer)));
         }
     }
 
-    @SuppressWarnings("unused") // used via reflection
-    public CProtogenModelUpdateMessage(PacketBuffer buffer) {
-        enabled = buffer.readBoolean();
+    @Override
+    public Message decode(PacketBuffer buffer) {
+        boolean enabled = buffer.readBoolean();
+        byte[] texture;
         if (enabled) {
             texture = new byte[Constants.TEXTURE_BYTE_SIZE];
             Exceptions.wrapChecked(() -> {
@@ -39,20 +41,11 @@ public class CProtogenModelUpdateMessage implements AutoRegistrableMessage {
         } else {
             texture = null;
         }
+        return new Message(enabled, texture);
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
-        buffer.writeBoolean(enabled);
-        if (enabled) {
-            Exceptions.wrapChecked(() -> {
-                Compression.compress(texture, new ByteBufOutputStream(buffer));
-            });
-        }
-    }
-
-    @Override
-    public void handle(Supplier<NetworkEvent.Context> ctx) {
+    public void handle(Message message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             // Must be client-to-server
             if (ctx.get().getDirection() != NetworkDirection.PLAY_TO_SERVER) return;
@@ -60,16 +53,30 @@ public class CProtogenModelUpdateMessage implements AutoRegistrableMessage {
             // need the player to really do anything useful with this message
             if (player == null) return;
             UUID playerId = player.getUUID();
-            if (enabled) {
-                ToasterSimulator.getProtogens().put(playerId, texture);
+            if (message.enabled) {
+                ToasterSimulator.getProtogens().put(playerId, message.texture);
             } else {
                 ToasterSimulator.getProtogens().remove(playerId);
             }
-            ToasterSimulator.getChannel().send(
+            ToasterSimulator.getNet().send(
                     PacketDistributor.ALL.noArg(),
-                    new SProtogenModelUpdateMessage(playerId, enabled, texture)
+                    new SModelUpdateMessageType.Message(playerId, message.enabled, message.texture)
             );
         });
         ctx.get().setPacketHandled(true);
+    }
+
+    public static class Message {
+        private final boolean enabled;
+        private final byte[] texture;
+
+        public Message(boolean enabled, byte[] texture) {
+            this.enabled = enabled;
+            if (enabled) {
+                this.texture = texture;
+            } else {
+                this.texture = null;
+            }
+        }
     }
 }

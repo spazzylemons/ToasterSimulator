@@ -5,7 +5,7 @@ import me.spazzylemons.toastersimulator.Constants;
 import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.client.ClientConstants;
 import me.spazzylemons.toastersimulator.client.util.ImageConversion;
-import me.spazzylemons.toastersimulator.network.CProtogenModelUpdateMessage;
+import me.spazzylemons.toastersimulator.network.CModelUpdateMessageType;
 import me.spazzylemons.toastersimulator.util.Exceptions;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
@@ -14,7 +14,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ConfigFileTypeHandler;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -60,7 +59,7 @@ public class ClientConfig {
 
     public void sendToServer() {
         if (ClientConstants.mc.getConnection() != null) {
-            ToasterSimulator.getChannel().sendToServer(new CProtogenModelUpdateMessage(isEnabled(), texture));
+            ToasterSimulator.getNet().sendToServer(new CModelUpdateMessageType.Message(isEnabled(), texture));
         }
     }
 
