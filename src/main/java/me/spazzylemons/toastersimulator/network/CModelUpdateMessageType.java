@@ -2,8 +2,8 @@ package me.spazzylemons.toastersimulator.network;
 
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+import me.spazzylemons.toastersimulator.ServerTextureManager;
 import me.spazzylemons.toastersimulator.TextureConstants;
-import me.spazzylemons.toastersimulator.ToasterSimulator;
 import me.spazzylemons.toastersimulator.util.Compression;
 import me.spazzylemons.toastersimulator.util.Exceptions;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -54,11 +54,11 @@ public class CModelUpdateMessageType implements MessageType<CModelUpdateMessageT
             if (player == null) return;
             UUID playerId = player.getUUID();
             if (message.enabled) {
-                ToasterSimulator.getProtogens().put(playerId, message.texture);
+                ServerTextureManager.put(playerId, message.texture);
             } else {
-                ToasterSimulator.getProtogens().remove(playerId);
+                ServerTextureManager.remove(playerId);
             }
-            ToasterSimulator.getNet().send(
+            ToasterNet.send(
                     PacketDistributor.ALL.noArg(),
                     new SModelUpdateMessageType.Message(playerId, message.enabled, message.texture)
             );

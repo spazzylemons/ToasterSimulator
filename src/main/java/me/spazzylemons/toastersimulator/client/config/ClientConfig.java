@@ -6,6 +6,7 @@ import me.spazzylemons.toastersimulator.client.ClientData;
 import me.spazzylemons.toastersimulator.client.ClientTextureManager;
 import me.spazzylemons.toastersimulator.client.util.ImageConversion;
 import me.spazzylemons.toastersimulator.network.CModelUpdateMessageType;
+import me.spazzylemons.toastersimulator.network.ToasterNet;
 import me.spazzylemons.toastersimulator.util.Exceptions;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraftforge.api.distmarker.Dist;
@@ -58,7 +59,7 @@ public class ClientConfig {
 
     public void sendToServer() {
         if (ClientData.MINECRAFT.getConnection() != null) {
-            ToasterSimulator.getNet().sendToServer(new CModelUpdateMessageType.Message(isEnabled(), texture));
+            ToasterNet.sendToServer(new CModelUpdateMessageType.Message(isEnabled(), texture));
         }
     }
 
