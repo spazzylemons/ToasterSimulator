@@ -6,9 +6,11 @@
   "refmap": "toastersimulator.refmap.json",
   "client": [
     "client.AbstractClientPlayerEntityMixin",
+    "client.BipedArmorLayerMixin",
     "client.CustomizeSkinScreenMixin",
     "client.EntityRendererMixin",
     "client.FirstPersonRendererMixin",
+    "client.LivingRendererMixin",
     "client.ModelRendererMixin",
     "client.PlayerModelMixin",
     "client.PlayerRendererMixin"

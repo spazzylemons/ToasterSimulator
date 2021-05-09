@@ -79,6 +79,7 @@ public final class OBJLoader {
         return result.get();
     }
 
+    // TODO make a registry of sorts for these
     public static final QuadModel emptyModel = new QuadModel(new Face[0]);
     public static final QuadModel headModel = OBJLoader.loadOrEmpty("head.obj");
     public static final QuadModel leftArmModel = OBJLoader.loadOrEmpty("left_arm.obj");
@@ -86,4 +87,8 @@ public final class OBJLoader {
     public static final QuadModel bodyModel = OBJLoader.loadOrEmpty("body.obj");
     public static final QuadModel leftLegModel = OBJLoader.loadOrEmpty("left_leg.obj");
     public static final QuadModel rightLegModel = OBJLoader.loadOrEmpty("right_leg.obj");
+    public static final QuadModel leftLegArmorModel = OBJLoader.loadOrEmpty("left_leg_armor.obj");
+    public static final QuadModel rightLegArmorModel = OBJLoader.loadOrEmpty("right_leg_armor.obj");
+    public static final QuadModel leftBootArmorModel = OBJLoader.loadOrEmpty("left_boot_armor.obj");
+    public static final QuadModel rightBootArmorModel = OBJLoader.loadOrEmpty("right_boot_armor.obj");
 }
