@@ -1,11 +1,14 @@
 package me.spazzylemons.toastersimulator.client;
 
 import me.spazzylemons.toastersimulator.client.config.ClientConfig;
+import me.spazzylemons.toastersimulator.client.config.ConfigScreen;
 import me.spazzylemons.toastersimulator.client.model.geometry.QuadModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.ModLoadingContext;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -23,6 +26,11 @@ public final class ClientData {
 
     public static void setup() {
         config = ClientConfig.create();
+
+        ModLoadingContext.get().registerExtensionPoint(
+                ExtensionPoint.CONFIGGUIFACTORY,
+                () -> (minecraft, screen) -> new ConfigScreen(screen)
+        );
     }
 
     public static @Nonnull ClientConfig getConfig() {
